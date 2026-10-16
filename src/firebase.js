@@ -32,3 +32,10 @@ export function loadFirebase() {
   });
   return ready;
 }
+
+/** 영상 하나의 댓글 개수 (문서를 내려받지 않고 개수만 센다) */
+export async function getCommentCount(videoId) {
+  const { fs, db } = await loadFirebase();
+  const snap = await fs.getCountFromServer(fs.collection(db, 'videos', videoId, 'comments'));
+  return snap.data().count;
+}

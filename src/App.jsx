@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import videos from './videos.json';
 import VideoCard from './VideoCard.jsx';
 import PlayerModal from './PlayerModal.jsx';
+import { getCommentCount } from './firebase.js';
 import { formatDate, groupByDate } from './dates.js';
 import { useInfiniteLimit, useMediaQuery } from './hooks.js';
 
@@ -53,7 +54,12 @@ export default function App() {
   }, [selected, sort]);
   // 팝업 재생목록 = 지금 화면에 보이는 순서 그대로
   const playlist = useMemo(() => shown.flatMap((group) => group.items), [shown]);
-  const closePlayer = useCallback(() => setPlayingId(null), []);
+  // 팝업을 닫을 때마다 값이 올라가서, 그동안 달린 댓글 개수를 다시 센다
+  const [countsVersion, setCountsVersion] = useState(0);
+  const closePlayer = useCallback(() => {
+    setPlayingId(null);
+    setCountsVersion((n) => n + 1);
+  }, []);
   const shownCount = shown.reduce((sum, group) => sum + group.items.length, 0);
 
   const isMobile = useMediaQuery(MOBILE_QUERY);
@@ -64,6 +70,26 @@ export default function App() {
     resetKey: `${selected}|${sort}`
   });
   const visible = isMobile ? takeFirst(shown, limit) : shown;
+
+  // 카드에 보여줄 댓글 개수 — 화면에 있는 영상만, 버전이 바뀐 것만 새로 센다
+  const [counts, setCounts] = useState({});
+  const fetchedAt = useRef({});
+  const visibleIds = visible.flatMap((group) => group.items.map((video) => video.id)).join(',');
+  useEffect(() => {
+    let cancelled = false;
+    for (const id of visibleIds.split(',').filter(Boolean)) {
+      if (fetchedAt.current[id] === countsVersion) continue;
+      fetchedAt.current[id] = countsVersion;
+      getCommentCount(id)
+        .then((count) => !cancelled && setCounts((prev) => ({ ...prev, [id]: count })))
+        .catch(() => {
+          fetchedAt.current[id] = undefined; // 실패하면 다음에 다시 시도, 개수는 그냥 숨긴다
+        });
+    }
+    return () => {
+      cancelled = true;
+    };
+  }, [visibleIds, countsVersion]);
 
   return (
     <div className="app">
@@ -131,6 +157,7 @@ export default function App() {
                       <VideoCard
                         video={video}
                         index={index + 1}
+                        commentCount={counts[video.id]}
                         onPlay={() => selectVideo(video.id)}
                       />
                     </li>

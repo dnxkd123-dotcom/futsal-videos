@@ -1,7 +1,7 @@
 import { displayTitle } from './dates.js';
 
 /** 썸네일 카드 — 누르면 팝업 플레이어가 열린다 */
-export default function VideoCard({ video, index, onPlay }) {
+export default function VideoCard({ video, index, commentCount, onPlay }) {
   const { id, title } = video;
   const name = displayTitle(title);
 
@@ -19,7 +19,14 @@ export default function VideoCard({ video, index, onPlay }) {
       </div>
       <div className="card__body">
         <h3 className="card__title">{name}</h3>
-        <span className="card__no">#{String(index).padStart(2, '0')}</span>
+        <span className="card__tags">
+          {commentCount > 0 && (
+            <span className="card__comments" title={`댓글 ${commentCount}개`}>
+              💬 {commentCount}
+            </span>
+          )}
+          <span className="card__no">#{String(index).padStart(2, '0')}</span>
+        </span>
       </div>
     </article>
   );
