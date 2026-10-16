@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "analyze": "node --env-file-if-exists=.env scripts/analyze.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",

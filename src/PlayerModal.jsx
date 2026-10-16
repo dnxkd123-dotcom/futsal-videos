@@ -1,5 +1,14 @@
 import { useEffect, useRef } from 'react';
+import analysis from './analysis.json';
 import { displayTitle, formatDate } from './dates.js';
+
+const TYPE_ICON = { goal: '⚽', shot: '🥅', save: '🧤', play: '👟', foul: '🟨', other: '📌' };
+
+/** 90 → '1:30' */
+function clock(seconds) {
+  const m = Math.floor(seconds / 60);
+  return `${m}:${String(seconds % 60).padStart(2, '0')}`;
+}
 
 let apiPromise;
 /** 유튜브 IFrame API 를 한 번만 불러온다 (영상이 끝난 걸 알아야 다음 영상으로 넘길 수 있다) */
@@ -80,6 +89,13 @@ export default function PlayerModal({ playlist, currentId, onSelect, onClose }) 
 
   if (!current) return null;
   const name = displayTitle(current.title);
+  const info = analysis[current.id];
+
+  // 하이라이트 시각으로 이동 — 장면 직전부터 보이도록 2초 앞에서 시작
+  const seek = (t) => {
+    playerRef.current?.seekTo?.(Math.max(0, t - 2), true);
+    playerRef.current?.playVideo?.();
+  };
 
   return (
     <div className="modal" role="dialog" aria-modal="true" aria-label={`${name} 재생`} onClick={onClose}>
@@ -100,6 +116,25 @@ export default function PlayerModal({ playlist, currentId, onSelect, onClose }) 
               </button>
             </div>
           </div>
+
+          {info && (
+            <section className="hl">
+              {info.highlights.length > 0 && (
+                <ul className="hl__list">
+                  {info.highlights.map((item) => (
+                    <li key={item.t}>
+                      <button type="button" className={`hl__item hl__item--${item.type}`} onClick={() => seek(item.t)}>
+                        <span aria-hidden="true">{TYPE_ICON[item.type] ?? TYPE_ICON.other}</span>
+                        <b>{clock(item.t)}</b>
+                        {item.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <small className="hl__note">AI가 자동으로 찾은 장면이라 시각이 조금 틀릴 수 있어요</small>
+            </section>
+          )}
         </div>
 
         <aside className="modal__side">
