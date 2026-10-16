@@ -38,3 +38,9 @@ export function displayTitle(title) {
   const match = /^\d{8}(\d{2})$/.exec(title);
   return match ? `${Number(match[1])}번째 영상` : title;
 }
+
+/** 90 → '1:30' */
+export function clock(seconds) {
+  const m = Math.floor(seconds / 60);
+  return `${m}:${String(seconds % 60).padStart(2, '0')}`;
+}

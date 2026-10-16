@@ -10,6 +10,7 @@
     "analyze": "node --env-file-if-exists=.env scripts/analyze.mjs"
   },
   "dependencies": {
+    "firebase": "^13.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },

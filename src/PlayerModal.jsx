@@ -1,14 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import analysis from './analysis.json';
-import { displayTitle, formatDate } from './dates.js';
+import Comments from './Comments.jsx';
+import { clock, displayTitle, formatDate } from './dates.js';
 
 const TYPE_ICON = { goal: '⚽', shot: '🥅', save: '🧤', play: '👟', foul: '🟨', other: '📌' };
-
-/** 90 → '1:30' */
-function clock(seconds) {
-  const m = Math.floor(seconds / 60);
-  return `${m}:${String(seconds % 60).padStart(2, '0')}`;
-}
 
 let apiPromise;
 /** 유튜브 IFrame API 를 한 번만 불러온다 (영상이 끝난 걸 알아야 다음 영상으로 넘길 수 있다) */
@@ -93,8 +88,8 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
   const info = analysis[current.id];
 
   // 하이라이트 시각으로 이동 — 장면 직전부터 보이도록 2초 앞에서 시작
-  const seek = (t) => {
-    playerRef.current?.seekTo?.(Math.max(0, t - 2), true);
+  const seek = (t, lead = 2) => {
+    playerRef.current?.seekTo?.(Math.max(0, t - lead), true);
     playerRef.current?.playVideo?.();
   };
 
@@ -166,6 +161,12 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
               <small className="hl__note">AI가 자동으로 찾은 장면이라 시각이 조금 틀릴 수 있어요</small>
             </section>
           )}
+
+          <Comments
+            videoId={current.id}
+            getTime={() => playerRef.current?.getCurrentTime?.() ?? 0}
+            onSeek={(t) => seek(t, 0)}
+          />
         </div>
 
         <aside className="modal__side">
