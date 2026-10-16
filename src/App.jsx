@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import videos from './videos.json';
 import VideoCard from './VideoCard.jsx';
+import PlayerModal from './PlayerModal.jsx';
 import { formatDate, groupByDate } from './dates.js';
 import { useInfiniteLimit, useMediaQuery } from './hooks.js';
 
@@ -28,7 +29,7 @@ const SORTS = [
 ];
 
 export default function App() {
-  // 한 번에 하나만 재생 — 다른 카드를 누르면 앞의 것은 썸네일로 돌아간다
+  // 팝업으로 재생 중인 영상 (없으면 null)
   const [playingId, setPlayingId] = useState(null);
   const [selected, setSelected] = useState('all');
   const [sort, setSort] = useState('new');
@@ -37,6 +38,9 @@ export default function App() {
     const list = selected === 'all' ? groups : groups.filter((group) => group.date === selected);
     return sort === 'new' ? list : [...list].reverse();
   }, [selected, sort]);
+  // 팝업 재생목록 = 지금 화면에 보이는 순서 그대로
+  const playlist = useMemo(() => shown.flatMap((group) => group.items), [shown]);
+  const closePlayer = useCallback(() => setPlayingId(null), []);
   const shownCount = shown.reduce((sum, group) => sum + group.items.length, 0);
 
   const isMobile = useMediaQuery(MOBILE_QUERY);
@@ -114,7 +118,6 @@ export default function App() {
                       <VideoCard
                         video={video}
                         index={index + 1}
-                        isPlaying={playingId === video.id}
                         onPlay={() => setPlayingId(video.id)}
                       />
                     </li>
@@ -142,6 +145,10 @@ export default function App() {
           <span>{shownCount}개 영상</span>
           <span>썸네일을 누르면 재생돼요</span>
         </footer>
+
+        {playingId && (
+          <PlayerModal playlist={playlist} currentId={playingId} onSelect={setPlayingId} onClose={closePlayer} />
+        )}
       </div>
     </div>
   );
