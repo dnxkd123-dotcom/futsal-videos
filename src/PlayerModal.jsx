@@ -35,6 +35,7 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
   const latest = useRef({});
   latest.current = { next, onSelect, currentId, startAt };
   const [copiedT, setCopiedT] = useState(null);
+  const [listOpen, setListOpen] = useState(false); // 모바일에서만 여닫는다 (데스크톱은 항상 펼침)
 
   // 플레이어는 한 번만 만들고, 영상이 바뀌면 loadVideoById 로 갈아 끼운다
   useEffect(() => {
@@ -66,7 +67,7 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
   useEffect(() => {
     playerRef.current?.loadVideoById?.(currentId);
     listRef.current?.querySelector('[aria-current="true"]')?.scrollIntoView({ block: 'nearest' });
-  }, [currentId]);
+  }, [currentId, listOpen]);
 
   // Esc 닫기, → 다음 영상, 뒤쪽 화면 스크롤 잠금
   useEffect(() => {
@@ -169,9 +170,13 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
           />
         </div>
 
-        <aside className="modal__side">
+        <aside className={`modal__side ${listOpen ? 'modal__side--open' : ''}`}>
           <h2 className="modal__head">
-            재생목록 <span>{index + 1} / {playlist.length}</span>
+            <button type="button" className="modal__toggle" aria-expanded={listOpen} onClick={() => setListOpen((open) => !open)}>
+              <span>재생목록</span>
+              <span className="modal__count">{index + 1} / {playlist.length}</span>
+              <span className="modal__chev" aria-hidden="true">{listOpen ? '▲' : '▼'}</span>
+            </button>
           </h2>
           <ol className="modal__list" ref={listRef}>
             {playlist.map((video) => {
@@ -182,7 +187,10 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
                     type="button"
                     className={`modal__item ${active ? 'modal__item--on' : ''}`}
                     aria-current={active}
-                    onClick={() => onSelect(video.id)}
+                    onClick={() => {
+                      onSelect(video.id);
+                      setListOpen(false);
+                    }}
                   >
                     <img src={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg`} alt="" loading="lazy" />
                     <span>
