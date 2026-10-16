@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import analysis from './analysis.json';
 import { displayTitle, formatDate } from './dates.js';
 
@@ -28,7 +28,7 @@ function loadYouTubeApi() {
 }
 
 /** 가운데 팝업 — 왼쪽 플레이어, 오른쪽 재생목록. 끝나면 다음 영상을 이어서 튼다 */
-export default function PlayerModal({ playlist, currentId, onSelect, onClose }) {
+export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect, onClose }) {
   const index = playlist.findIndex((video) => video.id === currentId);
   const current = playlist[index];
   const prev = playlist[index - 1];
@@ -38,7 +38,8 @@ export default function PlayerModal({ playlist, currentId, onSelect, onClose }) 
   const playerRef = useRef(null);
   const listRef = useRef(null);
   const latest = useRef({});
-  latest.current = { next, onSelect, currentId };
+  latest.current = { next, onSelect, currentId, startAt };
+  const [copiedT, setCopiedT] = useState(null);
 
   // 플레이어는 한 번만 만들고, 영상이 바뀌면 loadVideoById 로 갈아 끼운다
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function PlayerModal({ playlist, currentId, onSelect, onClose }) 
       hostRef.current.appendChild(mount);
       playerRef.current = new YT.Player(mount, {
         videoId: latest.current.currentId,
-        playerVars: { autoplay: 1, rel: 0, playsinline: 1 },
+        playerVars: { autoplay: 1, rel: 0, playsinline: 1, start: latest.current.startAt },
         events: {
           onReady: (event) => event.target.playVideo(),
           onStateChange: (event) => {
@@ -97,6 +98,22 @@ export default function PlayerModal({ playlist, currentId, onSelect, onClose }) 
     playerRef.current?.playVideo?.();
   };
 
+  // 이 장면으로 바로 열리는 링크를 복사 (?v=영상ID&t=시작초)
+  const copyLink = async (t) => {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = '';
+    url.searchParams.set('v', current.id);
+    url.searchParams.set('t', String(Math.max(0, t - 2)));
+    try {
+      await navigator.clipboard.writeText(url.toString());
+    } catch {
+      window.prompt('링크를 복사하세요', url.toString());
+    }
+    setCopiedT(t);
+    setTimeout(() => setCopiedT((now) => (now === t ? null : now)), 1500);
+  };
+
   return (
     <div className="modal" role="dialog" aria-modal="true" aria-label={`${name} 재생`} onClick={onClose}>
       <div className="modal__box" onClick={(event) => event.stopPropagation()}>
@@ -122,11 +139,20 @@ export default function PlayerModal({ playlist, currentId, onSelect, onClose }) 
               {info.highlights.length > 0 && (
                 <ul className="hl__list">
                   {info.highlights.map((item) => (
-                    <li key={item.t}>
+                    <li key={item.t} className="hl__row">
                       <button type="button" className={`hl__item hl__item--${item.type}`} onClick={() => seek(item.t)}>
                         <span aria-hidden="true">{TYPE_ICON[item.type] ?? TYPE_ICON.other}</span>
                         <b>{clock(item.t)}</b>
                         {item.label}
+                      </button>
+                      <button
+                        type="button"
+                        className="hl__copy"
+                        onClick={() => copyLink(item.t)}
+                        aria-label={`${clock(item.t)} 장면 링크 복사`}
+                        title="이 장면 링크 복사"
+                      >
+                        {copiedT === item.t ? '✓ 복사됨' : '🔗'}
                       </button>
                     </li>
                   ))}

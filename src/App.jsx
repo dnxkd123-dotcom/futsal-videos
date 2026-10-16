@@ -30,7 +30,20 @@ const SORTS = [
 
 export default function App() {
   // 팝업으로 재생 중인 영상 (없으면 null)
-  const [playingId, setPlayingId] = useState(null);
+  // 공유 링크(?v=영상ID&t=초)로 들어오면 그 장면으로 바로 연다
+  const [initial] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('v');
+    const t = Number(params.get('t'));
+    if (!videos.some((video) => video.id === id)) return { id: null, t: 0 };
+    return { id, t: Number.isFinite(t) && t > 0 ? Math.floor(t) : 0 };
+  });
+  const [playingId, setPlayingId] = useState(initial.id);
+  const [startAt, setStartAt] = useState(initial.t);
+  const selectVideo = useCallback((id) => {
+    setPlayingId(id);
+    setStartAt(0);
+  }, []);
   const [selected, setSelected] = useState('all');
   const [sort, setSort] = useState('new');
 
@@ -118,7 +131,7 @@ export default function App() {
                       <VideoCard
                         video={video}
                         index={index + 1}
-                        onPlay={() => setPlayingId(video.id)}
+                        onPlay={() => selectVideo(video.id)}
                       />
                     </li>
                   ))}
@@ -147,7 +160,13 @@ export default function App() {
         </footer>
 
         {playingId && (
-          <PlayerModal playlist={playlist} currentId={playingId} onSelect={setPlayingId} onClose={closePlayer} />
+          <PlayerModal
+            playlist={playlist}
+            currentId={playingId}
+            startAt={startAt}
+            onSelect={selectVideo}
+            onClose={closePlayer}
+          />
         )}
       </div>
     </div>
