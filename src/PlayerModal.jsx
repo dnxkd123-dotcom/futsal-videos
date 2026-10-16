@@ -98,21 +98,23 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
     playerRef.current?.playVideo?.();
   };
 
-  // 이 장면으로 바로 열리는 링크를 복사 (?v=영상ID&t=시작초)
-  const copyLink = async (t) => {
+  // 이 시각으로 바로 열리는 링크를 복사 (?v=영상ID&t=시작초). key 는 어떤 버튼이 눌렸는지 표시용
+  const copyLink = async (start, key) => {
     const url = new URL(window.location.href);
     url.search = '';
     url.hash = '';
     url.searchParams.set('v', current.id);
-    url.searchParams.set('t', String(Math.max(0, t - 2)));
+    url.searchParams.set('t', String(Math.max(0, Math.floor(start))));
     try {
       await navigator.clipboard.writeText(url.toString());
     } catch {
       window.prompt('링크를 복사하세요', url.toString());
     }
-    setCopiedT(t);
-    setTimeout(() => setCopiedT((now) => (now === t ? null : now)), 1500);
+    setCopiedT(key);
+    setTimeout(() => setCopiedT((now) => (now === key ? null : now)), 1500);
   };
+
+  const copyNow = () => copyLink(playerRef.current?.getCurrentTime?.() ?? 0, 'now');
 
   return (
     <div className="modal" role="dialog" aria-modal="true" aria-label={`${name} 재생`} onClick={onClose}>
@@ -125,6 +127,9 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
               <span>{formatDate(current.date).long}</span>
             </div>
             <div className="modal__nav">
+              <button type="button" className="seg__item modal__btn" onClick={copyNow} title="지금 보고 있는 시각부터 열리는 링크를 복사해요">
+                {copiedT === 'now' ? '✓ 복사됨' : '🔗 지금 시각 링크'}
+              </button>
               <button type="button" className="seg__item modal__btn" disabled={!prev} onClick={() => onSelect(prev.id)}>
                 ← 이전
               </button>
@@ -148,7 +153,7 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
                       <button
                         type="button"
                         className="hl__copy"
-                        onClick={() => copyLink(item.t)}
+                        onClick={() => copyLink(item.t - 2, item.t)}
                         aria-label={`${clock(item.t)} 장면 링크 복사`}
                         title="이 장면 링크 복사"
                       >
