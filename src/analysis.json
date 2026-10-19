@@ -2,70 +2,75 @@
   "cyjmg1u4XS4": {
     "highlights": [
       {
-        "t": 130,
-        "label": "문전 슈팅 시도",
+        "t": 128,
+        "label": "중앙 돌파 후 슈팅",
         "type": "shot"
       },
       {
-        "t": 382,
+        "t": 376,
         "label": "골문 앞 슈팅",
         "type": "shot"
       },
       {
-        "t": 516,
-        "label": "주황팀 득점 성공",
+        "t": 469,
+        "label": "문전 슈팅 시도",
+        "type": "shot"
+      },
+      {
+        "t": 514,
+        "label": "슈팅 성공 득점",
         "type": "goal"
       },
       {
         "t": 635,
-        "label": "강력한 슈팅 시도",
+        "label": "강력한 중거리 슈팅",
         "type": "shot"
       },
       {
-        "t": 738,
-        "label": "중거리 슈팅",
+        "t": 766,
+        "label": "역습 슈팅 시도",
         "type": "shot"
       }
     ],
     "model": "gemini-3.8-flash",
-    "analyzedAt": "2026-10-16"
+    "analyzedAt": "2026-10-19"
   },
   "FKrdrLFD75c": {
     "highlights": [
       {
         "t": 74,
-        "label": "골문 구석 슈팅 득점",
+        "label": "패스 연계 후 득점",
         "type": "goal"
       },
       {
-        "t": 134,
-        "label": "측면 연계 후 슈팅",
-        "type": "shot"
-      },
-      {
-        "t": 171,
-        "label": "중거리 슈팅 시도",
-        "type": "shot"
-      },
-      {
-        "t": 240,
-        "label": "문전 슈팅 마무리",
-        "type": "shot"
-      },
-      {
-        "t": 412,
-        "label": "측면 돌파 후 득점",
+        "t": 238,
+        "label": "침투 후 득점 성공",
         "type": "goal"
       },
       {
-        "t": 560,
-        "label": "위협적인 중거리 슈팅",
+        "t": 321,
+        "label": "역습 전개 후 슈팅",
         "type": "shot"
       },
       {
-        "t": 596,
-        "label": "감각적인 턴 동작",
-        "type": "play"
+        "t": 411,
+        "label": "문전 슈팅 득점",
+        "type": "goal"
+      },
+      {
+        "t": 504,
+        "label": "문전 슈팅 시도",
+        "type": "shot"
+      },
+      {
+        "t": 553,
+        "label": "골문 앞 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 644,
+        "label": "패스 연결 후 득점",
+        "type": "goal"
       }
     ],
     "model": "gemini-3.8-flash",
@@ -75,119 +80,124 @@
     "highlights": [
       {
         "t": 148,
-        "label": "골문 앞 슈팅",
+        "label": "돌파 후 슈팅",
         "type": "shot"
       },
       {
         "t": 184,
-        "label": "빠른 역습 슈팅",
+        "label": "중앙에서 슈팅",
         "type": "shot"
       },
       {
-        "t": 313,
-        "label": "역습 후 마무리 슈팅",
+        "t": 364,
+        "label": "역습 후 슈팅",
         "type": "shot"
       },
       {
-        "t": 471,
-        "label": "측면 돌파 후 슈팅",
+        "t": 508,
+        "label": "측면 패스 후 슈팅",
         "type": "shot"
       },
       {
-        "t": 610,
+        "t": 701,
         "label": "패스 연결 후 슈팅",
         "type": "shot"
       },
       {
-        "t": 672,
-        "label": "골문 앞 위협적인 슈팅",
-        "type": "shot"
-      },
-      {
         "t": 828,
-        "label": "측면 강한 슈팅",
-        "type": "shot"
+        "label": "문전 슈팅 득점",
+        "type": "goal"
       },
       {
-        "t": 852,
-        "label": "기습적인 중거리 슈팅",
+        "t": 850,
+        "label": "중거리 로빙 슛 득점",
+        "type": "goal"
+      },
+      {
+        "t": 898,
+        "label": "오른쪽 측면 슈팅",
         "type": "shot"
       }
     ],
     "model": "gemini-3.8-flash",
-    "analyzedAt": "2026-10-16"
+    "analyzedAt": "2026-10-19"
   },
   "Ka2SiNOEq0o": {
     "highlights": [
       {
-        "t": 33,
-        "label": "우측면 돌파 슈팅",
+        "t": 34,
+        "label": "우측면 슈팅",
         "type": "shot"
       },
       {
-        "t": 162,
-        "label": "중앙 돌파 후 슈팅",
+        "t": 114,
+        "label": "중앙 돌파 및 수비",
+        "type": "play"
+      },
+      {
+        "t": 216,
+        "label": "날카로운 중거리 슈팅",
         "type": "shot"
       },
       {
-        "t": 217,
-        "label": "역습 찬스 슈팅",
+        "t": 304,
+        "label": "문전 논스톱 슈팅",
         "type": "shot"
       },
       {
-        "t": 312,
-        "label": "골문 앞 패스 후 득점",
+        "t": 361,
+        "label": "골문 앞 슈팅 시도",
+        "type": "shot"
+      },
+      {
+        "t": 458,
+        "label": "슈팅 득점 성공",
         "type": "goal"
       },
       {
-        "t": 484,
-        "label": "문전 슈팅 시도",
-        "type": "shot"
-      },
-      {
         "t": 546,
-        "label": "공격 전개 및 수비 차단",
-        "type": "play"
+        "label": "역습 슈팅 찬스",
+        "type": "shot"
       }
     ],
     "model": "gemini-3.8-flash",
-    "analyzedAt": "2026-10-16"
+    "analyzedAt": "2026-10-19"
   },
   "fbokpZYwToY": {
     "highlights": [
       {
         "t": 40,
-        "label": "주황 팀 슈팅",
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 83,
+        "label": "슈팅",
         "type": "shot"
       },
       {
-        "t": 113,
-        "label": "골키퍼 선방",
-        "type": "save"
+        "t": 142,
+        "label": "골문 앞 득점",
+        "type": "goal"
       },
       {
-        "t": 265,
-        "label": "골키퍼 선방",
-        "type": "save"
-      },
-      {
-        "t": 404,
-        "label": "연두 팀 역습 슈팅",
+        "t": 383,
+        "label": "슈팅 후 수비 차단",
         "type": "shot"
       },
       {
         "t": 517,
-        "label": "주황 팀 슈팅",
-        "type": "shot"
+        "label": "골문 앞 득점",
+        "type": "goal"
       },
       {
-        "t": 543,
-        "label": "주황 팀 득점",
-        "type": "goal"
+        "t": 541,
+        "label": "골키퍼 선방",
+        "type": "save"
       }
     ],
     "model": "gemini-3.8-flash",
-    "analyzedAt": "2026-10-16"
+    "analyzedAt": "2026-10-19"
   },
   "IDQLbgLAfe8": {
     "highlights": [
@@ -197,146 +207,136 @@
         "type": "shot"
       },
       {
-        "t": 211,
-        "label": "측면 돌파 및 전개",
-        "type": "play"
+        "t": 117,
+        "label": "골문 앞 슈팅",
+        "type": "shot"
       },
       {
-        "t": 282,
+        "t": 283,
         "label": "역습 후 슈팅",
         "type": "shot"
       },
       {
+        "t": 307,
+        "label": "침투 후 깔끔한 득점",
+        "type": "goal"
+      },
+      {
         "t": 468,
-        "label": "골문 앞 슈팅 시도",
+        "label": "빠른 역습 후 슈팅",
         "type": "shot"
       },
       {
         "t": 507,
-        "label": "골키퍼 차단 선방",
-        "type": "save"
-      },
-      {
-        "t": 544,
-        "label": "슈팅 시도",
+        "label": "측면 돌파 후 슈팅",
         "type": "shot"
       }
     ],
     "model": "gemini-3.8-flash",
-    "analyzedAt": "2026-10-16"
+    "analyzedAt": "2026-10-19"
   },
   "BednzDYFMGw": {
     "highlights": [
       {
         "t": 78,
-        "label": "측면 돌파 후 슈팅",
-        "type": "shot"
-      },
-      {
-        "t": 110,
-        "label": "문전 슈팅 시도",
-        "type": "shot"
-      },
-      {
-        "t": 275,
-        "label": "턴 동작 후 슈팅",
-        "type": "shot"
-      },
-      {
-        "t": 472,
         "label": "골문 앞 슈팅 시도",
         "type": "shot"
       },
       {
-        "t": 674,
-        "label": "역습 후 슈팅",
+        "t": 241,
+        "label": "기습적인 중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 432,
+        "label": "역습 전개 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 472,
+        "label": "골문 앞 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 538,
+        "label": "침투 후 슈팅 시도",
+        "type": "shot"
+      },
+      {
+        "t": 633,
+        "label": "돌파 후 슈팅",
         "type": "shot"
       },
       {
         "t": 699,
-        "label": "중거리 슈팅 시도",
+        "label": "골문 앞 결정적 슈팅",
         "type": "shot"
       },
       {
-        "t": 714,
-        "label": "측면 슈팅 시도",
+        "t": 715,
+        "label": "문전 슈팅 시도",
         "type": "shot"
       }
     ],
     "model": "gemini-3.8-flash",
-    "analyzedAt": "2026-10-16"
+    "analyzedAt": "2026-10-19"
   },
   "dYThI0tdXP4": {
     "highlights": [
       {
-        "t": 99,
-        "label": "돌파 후 슈팅",
-        "type": "shot"
-      },
-      {
-        "t": 128,
-        "label": "골문 앞 득점",
-        "type": "goal"
-      },
-      {
-        "t": 232,
-        "label": "측면 슈팅",
-        "type": "shot"
-      },
-      {
-        "t": 307,
-        "label": "왼발 슈팅",
-        "type": "shot"
-      },
-      {
-        "t": 332,
-        "label": "슈팅 시도",
-        "type": "shot"
-      },
-      {
-        "t": 411,
-        "label": "골문 앞 득점",
-        "type": "goal"
-      },
-      {
-        "t": 688,
-        "label": "돌파 후 슈팅",
-        "type": "shot"
-      },
-      {
-        "t": 739,
-        "label": "중거리 골 득점",
-        "type": "goal"
-      }
-    ],
-    "model": "gemini-3.8-flash",
-    "analyzedAt": "2026-10-16"
-  },
-  "o9wScJJpcUY": {
-    "highlights": [
-      {
-        "t": 186,
-        "label": "패스 연계 후 득점",
-        "type": "goal"
-      },
-      {
-        "t": 267,
-        "label": "오른발 슈팅",
-        "type": "shot"
-      },
-      {
-        "t": 327,
+        "t": 233,
         "label": "중거리 슈팅",
         "type": "shot"
       },
       {
-        "t": 378,
+        "t": 411,
+        "label": "기습적인 중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 427,
+        "label": "측면 돌파 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 518,
+        "label": "중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 600,
+        "label": "중앙 돌파 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 688,
         "label": "역습 후 슈팅",
         "type": "shot"
       },
       {
-        "t": 426,
-        "label": "돌파 후 슈팅",
+        "t": 740,
+        "label": "강력한 슈팅 득점",
+        "type": "goal"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-10-19"
+  },
+  "o9wScJJpcUY": {
+    "highlights": [
+      {
+        "t": 188,
+        "label": "왼쪽 돌파 후 골",
+        "type": "goal"
+      },
+      {
+        "t": 304,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 425,
+        "label": "중거리 슈팅",
         "type": "shot"
       }
     ],
@@ -347,27 +347,37 @@
     "highlights": [
       {
         "t": 39,
-        "label": "주황팀 중거리 슈팅",
+        "label": "오렌지팀 중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 85,
+        "label": "옐로우팀 슈팅 시도",
         "type": "shot"
       },
       {
         "t": 367,
-        "label": "주황팀의 슈팅 시도",
+        "label": "오렌지팀 중거리 슈팅",
         "type": "shot"
       },
       {
-        "t": 421,
-        "label": "선수 부상으로 경기 중단",
-        "type": "other"
+        "t": 443,
+        "label": "옐로우팀 역습 슈팅",
+        "type": "shot"
       },
       {
-        "t": 591,
-        "label": "연두팀 연계 후 슈팅",
+        "t": 575,
+        "label": "오렌지팀 측면 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 592,
+        "label": "오렌지팀 침투 후 슈팅",
         "type": "shot"
       },
       {
         "t": 726,
-        "label": "연두팀 인터셉트 후 공격",
+        "label": "옐로우팀 빠른 역습",
         "type": "play"
       }
     ],
