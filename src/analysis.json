@@ -34,47 +34,42 @@
     "highlights": [
       {
         "t": 74,
-        "label": "중앙 연결 후 골",
+        "label": "골문 구석 슈팅 득점",
         "type": "goal"
       },
       {
-        "t": 170,
-        "label": "중거리 슈팅",
+        "t": 134,
+        "label": "측면 연계 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 171,
+        "label": "중거리 슈팅 시도",
         "type": "shot"
       },
       {
         "t": 240,
-        "label": "골문 앞 득점",
+        "label": "문전 슈팅 마무리",
+        "type": "shot"
+      },
+      {
+        "t": 412,
+        "label": "측면 돌파 후 득점",
         "type": "goal"
       },
       {
-        "t": 321,
-        "label": "역습 후 득점",
-        "type": "goal"
+        "t": 560,
+        "label": "위협적인 중거리 슈팅",
+        "type": "shot"
       },
       {
-        "t": 411,
-        "label": "연계 플레이 득점",
-        "type": "goal"
-      },
-      {
-        "t": 461,
-        "label": "골문 앞 슈팅 득점",
-        "type": "goal"
-      },
-      {
-        "t": 508,
-        "label": "침착한 마무리 득점",
-        "type": "goal"
-      },
-      {
-        "t": 554,
-        "label": "골문 앞 득점 성공",
-        "type": "goal"
+        "t": 596,
+        "label": "감각적인 턴 동작",
+        "type": "play"
       }
     ],
     "model": "gemini-3.8-flash",
-    "analyzedAt": "2026-10-16"
+    "analyzedAt": "2026-10-19"
   },
   "Hu7ncO8-Trc": {
     "highlights": [
