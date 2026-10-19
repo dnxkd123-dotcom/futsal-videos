@@ -316,5 +316,67 @@
     ],
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-10-16"
+  },
+  "o9wScJJpcUY": {
+    "highlights": [
+      {
+        "t": 186,
+        "label": "패스 연계 후 득점",
+        "type": "goal"
+      },
+      {
+        "t": 267,
+        "label": "오른발 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 327,
+        "label": "중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 378,
+        "label": "역습 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 426,
+        "label": "돌파 후 슈팅",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-10-19"
+  },
+  "VaaHOx1Ovxc": {
+    "highlights": [
+      {
+        "t": 39,
+        "label": "주황팀 중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 367,
+        "label": "주황팀의 슈팅 시도",
+        "type": "shot"
+      },
+      {
+        "t": 421,
+        "label": "선수 부상으로 경기 중단",
+        "type": "other"
+      },
+      {
+        "t": 591,
+        "label": "연두팀 연계 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 726,
+        "label": "연두팀 인터셉트 후 공격",
+        "type": "play"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-10-19"
   }
 }

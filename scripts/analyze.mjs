@@ -125,7 +125,7 @@ async function main() {
       analysis[video.id] = await analyze(video.id);
       // 하나 끝날 때마다 저장 — 중간에 멈춰도 앞의 것은 남는다
       writeFileSync(ANALYSIS, JSON.stringify(analysis, null, 2) + '\n');
-      console.log(`요약 + 하이라이트 ${analysis[video.id].highlights.length}개`);
+      console.log(`하이라이트 ${analysis[video.id].highlights.length}개`);
       done += 1;
     } catch (err) {
       console.log(`실패: ${err.message}`);
