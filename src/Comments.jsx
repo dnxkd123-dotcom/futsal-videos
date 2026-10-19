@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { loadFirebase } from './firebase.js';
 import { clock } from './dates.js';
+import Icon from './icons.jsx';
 
 const NICK_KEY = 'futsal-nickname';
 const MAX_NICK = 20;
@@ -155,9 +156,10 @@ export default function Comments({ videoId, getTime, onSeek }) {
     <section className={`cm ${open ? 'cm--open' : ''}`} aria-label="댓글">
       <h3 className="cm__head">
         <button type="button" className="cm__toggle" aria-expanded={open} onClick={() => setOpen((now) => !now)}>
-          <span>💬 댓글</span>
+          <Icon name="chat" size={18} />
+          <span>댓글</span>
           {status === 'ok' && <span className="cm__count">{items.length}</span>}
-          <span className="cm__chev" aria-hidden="true">{open ? '▲' : '▼'}</span>
+          <Icon name="chevron" size={16} className="cm__chev" />
         </button>
       </h3>
 
@@ -183,7 +185,8 @@ export default function Comments({ videoId, getTime, onSeek }) {
         />
         <div className="cm__actions">
           <button type="button" className="seg__item modal__btn" aria-pressed={attached !== null} onClick={toggleTime}>
-            {attached === null ? '⏱ 현재 시각 붙이기' : `⏱ ${clock(attached)} 붙음 (취소)`}
+            <Icon name="clock" />
+            {attached === null ? '현재 시각 붙이기' : `${clock(attached)} 붙음 (취소)`}
           </button>
           <button type="submit" className="seg__item modal__btn cm__send" disabled={sending}>
             {sending ? '등록 중…' : '등록'}
@@ -211,10 +214,11 @@ export default function Comments({ videoId, getTime, onSeek }) {
                 </button>
               )}
             </div>
-            <p className="cm__body">
+            <p className="cm__text-body">
               {typeof item.t === 'number' && (
                 <button type="button" className="cm__time" onClick={() => onSeek(item.t)} title="이 시각으로 이동">
-                  ⏱ {clock(item.t)}
+                  <Icon name="clock" size={12} />
+                  {clock(item.t)}
                 </button>
               )}
               {item.text}

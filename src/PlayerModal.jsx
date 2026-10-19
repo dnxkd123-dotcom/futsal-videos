@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import analysis from './analysis.json';
 import Comments from './Comments.jsx';
+import Icon from './icons.jsx';
 import { clock, displayTitle, formatDate } from './dates.js';
 
-const TYPE_ICON = { goal: '⚽', shot: '🥅', save: '🧤', play: '👟', foul: '🟨', other: '📌' };
+const TYPE_ICON = { goal: 'ball', shot: 'net', save: 'shield', play: 'pass', foul: 'card', other: 'pin' };
 
 let apiPromise;
 /** 유튜브 IFrame API 를 한 번만 불러온다 (영상이 끝난 걸 알아야 다음 영상으로 넘길 수 있다) */
@@ -122,7 +123,7 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
             </div>
             <div className="modal__nav">
               <button type="button" className="seg__item modal__btn" onClick={copyNow} title="지금 보고 있는 시각부터 열리는 링크를 복사해요">
-                {copiedT === 'now' ? '✓ 복사됨' : '🔗 지금 시각 링크'}
+                {copiedT === 'now' ? <><Icon name="check" /> 복사됨</> : <><Icon name="link" /> 지금 시각 링크</>}
               </button>
               <button type="button" className="seg__item modal__btn" disabled={!prev} onClick={() => onSelect(prev.id)}>
                 ← 이전
@@ -132,33 +133,34 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
               </button>
             </div>
             <p className="modal__hint">
-              <b>🔗 지금 시각 링크</b>를 누르면 지금 보고 있는 장면부터 열리는 주소가 복사돼요. 친구에게 보내 보세요!
+              <Icon name="link" size={14} />
+              <span>링크 버튼은 그 장면부터 열리는 주소를 복사해요. 지금 보는 장면은 위 버튼, 하이라이트는 각 장면 오른쪽 버튼이에요.</span>
             </p>
           </div>
 
           {info && (
             <section className="hl">
-              <p className="hl__hint">
-                장면을 누르면 그 시각으로 이동하고, <b>🔗 링크 복사</b>를 누르면 그 장면이 바로 열리는 주소가 복사돼요.
-              </p>
               {info.highlights.length > 0 && (
                 <ul className="hl__list">
                   {info.highlights.map((item) => (
-                    <li key={item.t} className="hl__row">
-                      <button type="button" className={`hl__item hl__item--${item.type}`} onClick={() => seek(item.t)}>
-                        <span aria-hidden="true">{TYPE_ICON[item.type] ?? TYPE_ICON.other}</span>
-                        <b>{clock(item.t)}</b>
-                        {item.label}
-                      </button>
-                      <button
-                        type="button"
-                        className="hl__copy"
-                        onClick={() => copyLink(item.t - 2, item.t)}
-                        aria-label={`${clock(item.t)} 장면 링크 복사`}
-                        title="이 장면 링크 복사"
-                      >
-                        {copiedT === item.t ? '✓ 복사됨' : '🔗 링크 복사'}
-                      </button>
+                    <li key={item.t}>
+                      <div className={`hl__chip hl__chip--${item.type}`}>
+                        <button type="button" className="hl__seek" onClick={() => seek(item.t)}>
+                          <Icon name={TYPE_ICON[item.type] ?? 'pin'} />
+                          <b>{clock(item.t)}</b>
+                          {item.label}
+                        </button>
+                        <button
+                          type="button"
+                          className="hl__copy"
+                          onClick={() => copyLink(item.t - 2, item.t)}
+                          aria-label={`${clock(item.t)} 장면 링크 복사`}
+                          title="이 장면 링크 복사"
+                        >
+                          <Icon name={copiedT === item.t ? 'check' : 'link'} size={14} />
+                          {copiedT === item.t && '복사됨'}
+                        </button>
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -180,7 +182,7 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
               <span className="modal__label modal__label--d">재생목록</span>
               <span className="modal__label modal__label--m">다른 영상 보기</span>
               <span className="modal__count">{index + 1} / {playlist.length}</span>
-              <span className="modal__chev" aria-hidden="true">{listOpen ? '▲' : '▼'}</span>
+              <Icon name="chevron" size={16} className="modal__chev" />
             </button>
           </h2>
           <ol className="modal__list" ref={listRef}>
@@ -210,7 +212,7 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
         </aside>
 
         <button type="button" className="modal__close" onClick={onClose} aria-label="닫기">
-          ✕
+          <Icon name="close" size={16} />
         </button>
       </div>
     </div>

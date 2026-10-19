@@ -1,7 +1,8 @@
 import { displayTitle } from './dates.js';
+import Icon from './icons.jsx';
 
 /** 썸네일 카드 — 누르면 팝업 플레이어가 열린다 */
-export default function VideoCard({ video, index, commentCount, onPlay }) {
+export default function VideoCard({ video, index, commentCount, goals, onPlay }) {
   const { id, title } = video;
   const name = displayTitle(title);
 
@@ -20,9 +21,16 @@ export default function VideoCard({ video, index, commentCount, onPlay }) {
       <div className="card__body">
         <h3 className="card__title">{name}</h3>
         <span className="card__tags">
+          {goals > 0 && (
+            <span className="card__goal" title={`골 ${goals}개`}>
+              <Icon name="ball" size={13} />
+              {goals}
+            </span>
+          )}
           {commentCount > 0 && (
             <span className="card__comments" title={`댓글 ${commentCount}개`}>
-              💬 {commentCount}
+              <Icon name="chat" size={13} />
+              {commentCount}
             </span>
           )}
           <span className="card__no">#{String(index).padStart(2, '0')}</span>

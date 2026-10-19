@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import videos from './videos.json';
 import VideoCard from './VideoCard.jsx';
 import PlayerModal from './PlayerModal.jsx';
+import analysis from './analysis.json';
 import { getCommentCount } from './firebase.js';
 import { formatDate, groupByDate } from './dates.js';
 import { useInfiniteLimit, useMediaQuery } from './hooks.js';
@@ -124,9 +125,8 @@ export default function App() {
       <div className="main">
         <header className="bar">
           <div className="bar__path">
-            <span>videos</span>
-            <span>/</span>
-            <strong>{selected === 'all' ? 'all' : selected}</strong>
+            <strong>{selected === 'all' ? '전체 영상' : formatDate(selected).long}</strong>
+            <span>{shownCount}개</span>
           </div>
           <div className="seg" role="group" aria-label="정렬">
             {SORTS.map((item) => (
@@ -158,6 +158,7 @@ export default function App() {
                         video={video}
                         index={index + 1}
                         commentCount={counts[video.id]}
+                        goals={analysis[video.id]?.highlights.filter((item) => item.type === 'goal').length}
                         onPlay={() => selectVideo(video.id)}
                       />
                     </li>
