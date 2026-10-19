@@ -179,7 +179,8 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
         <aside className={`modal__side ${listOpen ? 'modal__side--open' : ''}`}>
           <h2 className="modal__head">
             <button type="button" className="modal__toggle" aria-expanded={listOpen} onClick={() => setListOpen((open) => !open)}>
-              <span>재생목록</span>
+              <span className="modal__label modal__label--d">재생목록</span>
+              <span className="modal__label modal__label--m">다른 영상 보기</span>
               <span className="modal__count">{index + 1} / {playlist.length}</span>
               <span className="modal__chev" aria-hidden="true">{listOpen ? '▲' : '▼'}</span>
             </button>

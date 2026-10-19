@@ -53,6 +53,7 @@ export default function Comments({ videoId, getTime, onSeek }) {
   const [text, setText] = useState('');
   const [attached, setAttached] = useState(null); // 붙인 시각(초) 또는 null
   const [sending, setSending] = useState(false);
+  const [open, setOpen] = useState(false); // 모바일에서만 여닫는다 (데스크톱은 항상 펼침)
   const [formError, setFormError] = useState('');
 
   useEffect(() => {
@@ -130,6 +131,7 @@ export default function Comments({ videoId, getTime, onSeek }) {
       saveNick(nick);
       setText('');
       setAttached(null);
+      setOpen(true);
     } catch {
       setFormError('댓글을 올리지 못했어요. 잠시 뒤 다시 시도해 주세요');
     } finally {
@@ -150,10 +152,16 @@ export default function Comments({ videoId, getTime, onSeek }) {
   const toggleTime = () => setAttached((now) => (now === null ? Math.floor(getTime()) : null));
 
   return (
-    <section className="cm" aria-label="댓글">
+    <section className={`cm ${open ? 'cm--open' : ''}`} aria-label="댓글">
       <h3 className="cm__head">
-        댓글 <span>{status === 'ok' ? items.length : ''}</span>
+        <button type="button" className="cm__toggle" aria-expanded={open} onClick={() => setOpen((now) => !now)}>
+          <span>💬 댓글</span>
+          {status === 'ok' && <span className="cm__count">{items.length}</span>}
+          <span className="cm__chev" aria-hidden="true">{open ? '▲' : '▼'}</span>
+        </button>
       </h3>
+
+      <div className="cm__body">
 
       <form className="cm__form" onSubmit={submit}>
         <input
@@ -214,6 +222,7 @@ export default function Comments({ videoId, getTime, onSeek }) {
           </li>
         ))}
       </ul>
+      </div>
     </section>
   );
 }

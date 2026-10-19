@@ -136,7 +136,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* 댓글 */
 .cm { padding: 14px 16px 18px; border-top: 2px dashed var(--ink); }
 .cm__head { font-family: var(--font-cute); font-size: 20px; font-weight: 400; }
-.cm__head span { margin-left: 4px; font-family: var(--font-body); font-size: 12px; color: var(--dim); }
+.cm__toggle { display: flex; align-items: baseline; gap: 6px; width: 100%; font: inherit; text-align: left; pointer-events: none; cursor: default; }
+.cm__count { font-family: var(--font-body); font-size: 12px; color: var(--dim); }
+.cm__chev { display: none; margin-left: auto; font-family: var(--font-body); font-size: 11px; }
+.modal__label--m { display: none; }
 .cm__form { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
 .cm__nick, .cm__text { width: 100%; padding: 7px 12px; border: 2px solid var(--ink); border-radius: 14px; background: #fff; font: inherit; font-size: 13px; color: var(--ink); }
 .cm__nick { max-width: 200px; }
@@ -173,14 +176,21 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .modal__box > *, .modal__main > * { flex: none; }
   .modal__video { position: sticky; top: 0; z-index: 3; order: 0; max-height: 48vh; }
   .modal__info { order: 1; }
-  .modal__side { order: 2; border-left: 0; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
-  .hl { order: 3; }
-  .cm { order: 4; }
+  .modal__side { order: 4; border-left: 0; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
+  .hl { order: 2; }
+  .cm { order: 3; }
   .modal__head { padding: 0; }
   .modal__toggle { padding: 10px 16px; pointer-events: auto; cursor: pointer; }
   .modal__chev { display: inline; }
   .modal__list { display: none; max-height: 45vh; }
   .modal__side--open .modal__list { display: flex; }
+  .cm { padding: 0; }
+  .cm__toggle { padding: 12px 16px; pointer-events: auto; cursor: pointer; }
+  .cm__chev { display: inline; }
+  .cm__body { display: none; padding: 0 16px 16px; }
+  .cm--open .cm__body { display: block; }
+  .modal__label--d { display: none; }
+  .modal__label--m { display: inline; }
   .modal__close { position: fixed; top: 8px; right: 8px; z-index: 5; }
 }
 .modal__hint, .hl__hint { font-size: 12px; color: #555; }
