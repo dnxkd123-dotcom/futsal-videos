@@ -133,10 +133,16 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
                 다음 →
               </button>
             </div>
+            <p className="modal__hint">
+              <b>🔗 지금 시각 링크</b>를 누르면 지금 보고 있는 장면부터 열리는 주소가 복사돼요. 친구에게 보내 보세요!
+            </p>
           </div>
 
           {info && (
             <section className="hl">
+              <p className="hl__hint">
+                장면을 누르면 그 시각으로 이동하고, <b>🔗 링크 복사</b>를 누르면 그 장면이 바로 열리는 주소가 복사돼요.
+              </p>
               {info.highlights.length > 0 && (
                 <ul className="hl__list">
                   {info.highlights.map((item) => (
@@ -153,7 +159,7 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
                         aria-label={`${clock(item.t)} 장면 링크 복사`}
                         title="이 장면 링크 복사"
                       >
-                        {copiedT === item.t ? '✓ 복사됨' : '🔗'}
+                        {copiedT === item.t ? '✓ 복사됨' : '🔗 링크 복사'}
                       </button>
                     </li>
                   ))}
