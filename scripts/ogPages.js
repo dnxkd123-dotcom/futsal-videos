@@ -7,7 +7,7 @@
  */
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 
-const SITE = 'https://dnxkd123-dotcom.github.io/futsal-videos/';
+const SITE = 'https://www.wootang.kro.kr/';
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
 const escapeHtml = (text) =>
