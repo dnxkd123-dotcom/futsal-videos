@@ -1,8 +1,28 @@
 import { useEffect, useRef, useState } from 'react';
 import analysis from './analysis.json';
 import Comments from './Comments.jsx';
+import { getHighlightViews, recordHighlightView } from './firebase.js';
 import Icon from './icons.jsx';
 import { clock, displayTitle, formatDate } from './dates.js';
+
+const MIN_TOP_VIEWS = 3; // 이 사람 수 이상 본 장면만 "가장 많이 본 장면"으로 꼽는다
+const VIEWED_KEY = 'futsal-viewed-highlights';
+
+function readViewed() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(VIEWED_KEY) ?? '[]'));
+  } catch {
+    return new Set();
+  }
+}
+
+function saveViewed(set) {
+  try {
+    localStorage.setItem(VIEWED_KEY, JSON.stringify([...set]));
+  } catch {
+    /* 저장 안 돼도 시청 기록에는 문제없다 */
+  }
+}
 
 const TYPE_ICON = { goal: 'ball', shot: 'net', save: 'shield', play: 'pass', foul: 'card', other: 'pin' };
 
@@ -36,6 +56,7 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
   const latest = useRef({});
   latest.current = { next, onSelect, currentId, startAt };
   const [copiedT, setCopiedT] = useState(null);
+  const [views, setViews] = useState({}); // 장면 시각 → 본 사람 수
   const [listOpen, setListOpen] = useState(false); // 모바일에서만 여닫는다 (데스크톱은 항상 펼침)
 
   // 플레이어는 한 번만 만들고, 영상이 바뀌면 loadVideoById 로 갈아 끼운다
@@ -64,6 +85,20 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
       playerRef.current = null;
     };
   }, []);
+
+  // 영상이 바뀔 때마다 하이라이트별 시청 인원을 불러온다 (실패해도 숫자만 안 보일 뿐)
+  useEffect(() => {
+    setViews({});
+    const times = (analysis[currentId]?.highlights ?? []).map((item) => item.t);
+    if (!times.length) return undefined;
+    let cancelled = false;
+    getHighlightViews(currentId, times)
+      .then((result) => !cancelled && setViews(result))
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [currentId]);
 
   useEffect(() => {
     playerRef.current?.loadVideoById?.(currentId);
@@ -94,6 +129,26 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
     playerRef.current?.seekTo?.(Math.max(0, t - lead), true);
     playerRef.current?.playVideo?.();
   };
+
+  // 하이라이트를 눌러 이동하면 "봤다"고 기록 (한 사람이 한 장면에 한 번만)
+  const openHighlight = (t) => {
+    seek(t);
+    const key = `${current.id}:${t}`;
+    const viewed = readViewed();
+    if (viewed.has(key)) return;
+    recordHighlightView(current.id, t)
+      .then(() => {
+        viewed.add(key);
+        saveViewed(viewed);
+        setViews((prev) => ({ ...prev, [t]: (prev[t] ?? 0) + 1 }));
+      })
+      .catch(() => {
+        // 이미 기록된 장면이거나 규칙이 아직 게시되지 않은 경우 — 조용히 넘어간다
+      });
+  };
+
+  const topViews = Math.max(0, ...Object.values(views));
+  const isTop = (t) => topViews >= MIN_TOP_VIEWS && views[t] === topViews;
 
   // 이 시각으로 바로 열리는 링크를 복사 (/v/영상ID/?t=시작초). 이 주소는 영상별 카카오톡 미리보기 페이지다.
   // key 는 어떤 버튼이 눌렸는지 표시용
@@ -143,9 +198,9 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
               {info.highlights.length > 0 && (
                 <ul className="hl__list">
                   {info.highlights.map((item) => (
-                    <li key={item.t}>
-                      <div className={`hl__chip hl__chip--${item.type}`}>
-                        <button type="button" className="hl__seek" onClick={() => seek(item.t)}>
+                    <li key={item.t} className="hl__row">
+                      <div className={`hl__chip hl__chip--${item.type} ${isTop(item.t) ? 'hl__chip--top' : ''}`}>
+                        <button type="button" className="hl__seek" onClick={() => openHighlight(item.t)}>
                           <Icon name={TYPE_ICON[item.type] ?? 'pin'} />
                           <b>{clock(item.t)}</b>
                           {item.label}
@@ -161,6 +216,14 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
                           {copiedT === item.t && '복사됨'}
                         </button>
                       </div>
+                      {isTop(item.t) ? (
+                        <span className="hl__top">
+                          <Icon name="flame" size={13} />
+                          가장 많이 본 장면 · {views[item.t]}명
+                        </span>
+                      ) : (
+                        views[item.t] > 0 && <span className="hl__views">{views[item.t]}명 봄</span>
+                      )}
                     </li>
                   ))}
                 </ul>

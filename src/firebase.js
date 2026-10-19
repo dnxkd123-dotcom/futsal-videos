@@ -39,3 +39,25 @@ export async function getCommentCount(videoId) {
   const snap = await fs.getCountFromServer(fs.collection(db, 'videos', videoId, 'comments'));
   return snap.data().count;
 }
+
+/**
+ * 하이라이트 장면별로 몇 명이 봤는지 센다 (장면 시각 → 사람 수).
+ * 기록 문서 하나가 "한 사람이 한 장면을 봤다"이므로 문서 개수가 곧 사람 수다.
+ */
+export async function getHighlightViews(videoId, times) {
+  const { fs, db } = await loadFirebase();
+  const col = fs.collection(db, 'videos', videoId, 'hlViews');
+  const entries = await Promise.all(
+    times.map(async (t) => {
+      const snap = await fs.getCountFromServer(fs.query(col, fs.where('t', '==', t)));
+      return [t, snap.data().count];
+    })
+  );
+  return Object.fromEntries(entries);
+}
+
+/** 이 사람이 이 장면을 봤다고 기록 — 문서 ID 가 "시각_uid" 라서 같은 사람은 한 장면에 한 번만 들어간다 */
+export async function recordHighlightView(videoId, t) {
+  const { fs, db, uid } = await loadFirebase();
+  await fs.setDoc(fs.doc(db, 'videos', videoId, 'hlViews', `${t}_${uid}`), { t, uid });
+}

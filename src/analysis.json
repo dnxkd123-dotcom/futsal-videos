@@ -383,5 +383,41 @@
     ],
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-10-19"
+  },
+  "j9rlWKO2Ck0": {
+    "highlights": [
+      {
+        "t": 74,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 200,
+        "label": "중거리 슈팅 득점",
+        "type": "goal"
+      },
+      {
+        "t": 394,
+        "label": "돌파 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 481,
+        "label": "측면 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 534,
+        "label": "골문 앞 슈팅 찬스",
+        "type": "shot"
+      },
+      {
+        "t": 623,
+        "label": "측면 돌파 후 득점",
+        "type": "goal"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-10-19"
   }
 }

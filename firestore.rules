@@ -20,6 +20,19 @@ service cloud.firestore {
       allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
     }
 
+    // 하이라이트 시청 기록 — 한 사람(uid)이 한 장면(시각)에 문서 하나. 문서 ID 가 "시각_uid" 라서 중복으로 못 쌓고,
+    // 만든 뒤에는 고치거나 지울 수 없다. 읽기는 공개(개수 집계용).
+    match /videos/{videoId}/hlViews/{viewId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['t', 'uid'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.t is int
+        && request.resource.data.t >= 0 && request.resource.data.t <= 86400
+        && viewId == string(request.resource.data.t) + '_' + request.auth.uid;
+      allow update, delete: if false;
+    }
+
     // 비공개 기록(IP·기기 정보) — 쓰기만 가능하고 아무도 읽을 수 없다. 관리자는 콘솔에서 확인.
     match /commentMeta/{commentId} {
       allow create: if request.auth != null
