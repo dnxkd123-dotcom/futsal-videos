@@ -31,10 +31,10 @@ const SORTS = [
 
 export default function App() {
   // 팝업으로 재생 중인 영상 (없으면 null)
-  // 공유 링크(?v=영상ID&t=초)로 들어오면 그 장면으로 바로 연다
+  // 공유 링크(/v/영상ID/?t=초, 예전 ?v=영상ID&t=초 도 지원)로 들어오면 그 장면으로 바로 연다
   const [initial] = useState(() => {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('v');
+    const id = /\/v\/([\w-]{11})\/?$/.exec(window.location.pathname)?.[1] ?? params.get('v');
     const t = Number(params.get('t'));
     if (!videos.some((video) => video.id === id)) return { id: null, t: 0 };
     return { id, t: Number.isFinite(t) && t > 0 ? Math.floor(t) : 0 };

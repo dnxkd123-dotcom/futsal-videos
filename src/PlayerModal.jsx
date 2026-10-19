@@ -94,12 +94,10 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
     playerRef.current?.playVideo?.();
   };
 
-  // 이 시각으로 바로 열리는 링크를 복사 (?v=영상ID&t=시작초). key 는 어떤 버튼이 눌렸는지 표시용
+  // 이 시각으로 바로 열리는 링크를 복사 (/v/영상ID/?t=시작초). 이 주소는 영상별 카카오톡 미리보기 페이지다.
+  // key 는 어떤 버튼이 눌렸는지 표시용
   const copyLink = async (start, key) => {
-    const url = new URL(window.location.href);
-    url.search = '';
-    url.hash = '';
-    url.searchParams.set('v', current.id);
+    const url = new URL(`v/${current.id}/`, document.baseURI);
     url.searchParams.set('t', String(Math.max(0, Math.floor(start))));
     try {
       await navigator.clipboard.writeText(url.toString());
