@@ -24,6 +24,7 @@ function saveViewed(set) {
   }
 }
 
+const TYPE_LABEL = { goal: '골', shot: '슈팅', save: '선방', play: '플레이', foul: '파울', other: '기타' };
 const TYPE_ICON = { goal: 'ball', shot: 'net', save: 'shield', play: 'pass', foul: 'card', other: 'pin' };
 
 let apiPromise;
@@ -211,41 +212,56 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
           </div>
 
           {info && (
-            <section className="hl">
+            <section className="hs">
+              <header className="hs__head">
+                <h3>하이라이트</h3>
+                <span>{info.highlights.length}장면</span>
+              </header>
               {info.highlights.length > 0 && (
-                <ul className="hl__list">
-                  {info.highlights.map((item) => (
-                    <li key={item.t} className="hl__row">
-                      <div className={`hl__chip hl__chip--${item.type} ${isTop(item.t) ? 'hl__chip--top' : ''} ${activeT === item.t ? 'hl__chip--on' : ''}`}>
-                        <button type="button" className="hl__seek" aria-current={activeT === item.t} onClick={() => openHighlight(item.t)}>
-                          <Icon name={TYPE_ICON[item.type] ?? 'pin'} />
-                          <b>{clock(item.t)}</b>
-                          {item.label}
+                <ol className="hs__list">
+                  {info.highlights.map((item) => {
+                    const on = activeT === item.t;
+                    return (
+                      <li key={item.t} className={`hs__item hs__item--${item.type} ${on ? 'hs__item--on' : ''} ${isTop(item.t) ? 'hs__item--top' : ''}`}>
+                        <button type="button" className="hs__go" aria-current={on} onClick={() => openHighlight(item.t)}>
+                          <span className="hs__time">{clock(item.t)}</span>
+                          <span className="hs__icon">
+                            <Icon name={TYPE_ICON[item.type] ?? 'pin'} size={16} />
+                          </span>
+                          <span className="hs__label">{item.label}</span>
+                          <span className="hs__kind">{TYPE_LABEL[item.type] ?? '장면'}</span>
+                          {on && (
+                            <span className="hs__eq" aria-hidden="true">
+                              <i />
+                              <i />
+                              <i />
+                            </span>
+                          )}
                         </button>
+                        {isTop(item.t) ? (
+                          <span className="hs__views hs__views--top">
+                            <Icon name="flame" size={13} />
+                            최다 시청 · {views[item.t]}명
+                          </span>
+                        ) : (
+                          views[item.t] > 0 && <span className="hs__views">{views[item.t]}명 봄</span>
+                        )}
                         <button
                           type="button"
-                          className="hl__copy"
+                          className="hs__copy"
                           onClick={() => copyLink(item.t - 2, item.t)}
                           aria-label={`${clock(item.t)} 장면 링크 복사`}
                           title="이 장면 링크 복사"
                         >
-                          <Icon name={copiedT === item.t ? 'check' : 'link'} size={14} />
-                          {copiedT === item.t && '복사됨'}
+                          <Icon name={copiedT === item.t ? 'check' : 'link'} size={15} />
+                          {copiedT === item.t && <span>복사됨</span>}
                         </button>
-                      </div>
-                      {isTop(item.t) ? (
-                        <span className="hl__top">
-                          <Icon name="flame" size={13} />
-                          가장 많이 본 장면 · {views[item.t]}명
-                        </span>
-                      ) : (
-                        views[item.t] > 0 && <span className="hl__views">{views[item.t]}명 봄</span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
+                      </li>
+                    );
+                  })}
+                </ol>
               )}
-              <small className="hl__note">AI가 자동으로 찾은 장면이라 시각이 조금 틀릴 수 있어요</small>
+              <small className="hs__note">AI가 자동으로 찾은 장면이라 시각이 조금 틀릴 수 있어요</small>
             </section>
           )}
 
