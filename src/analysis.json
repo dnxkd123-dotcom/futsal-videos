@@ -892,5 +892,46 @@
     ],
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-10-23"
+  },
+  "5Rh3yf0WtiI": {
+    "highlights": [
+      {
+        "t": 152,
+        "label": "골문 노린 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 215,
+        "label": "골키퍼 발 선방",
+        "type": "save"
+      },
+      {
+        "t": 470,
+        "label": "문전 앞 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 548,
+        "label": "역습 슈팅 및 선방",
+        "type": "save"
+      },
+      {
+        "t": 595,
+        "label": "골키퍼 결정적 선방",
+        "type": "save"
+      },
+      {
+        "t": 605,
+        "label": "터닝 슛 선방",
+        "type": "save"
+      },
+      {
+        "t": 648,
+        "label": "골키퍼 슈팅 선방",
+        "type": "save"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-10-23"
   }
 }
