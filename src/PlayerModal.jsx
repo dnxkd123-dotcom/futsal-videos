@@ -57,6 +57,7 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
   latest.current = { next, onSelect, currentId, startAt };
   const [copiedT, setCopiedT] = useState(null);
   const [views, setViews] = useState({}); // 장면 시각 → 본 사람 수
+  const [time, setTime] = useState(startAt); // 지금 재생 위치(초) — 하이라이트 활성 표시용
   const [listOpen, setListOpen] = useState(false); // 모바일에서만 여닫는다 (데스크톱은 항상 펼침)
 
   // 플레이어는 한 번만 만들고, 영상이 바뀌면 loadVideoById 로 갈아 끼운다
@@ -100,7 +101,17 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
     };
   }, [currentId]);
 
+  // 재생 위치를 따라가며 지금 장면의 하이라이트를 활성 표시
   useEffect(() => {
+    const timer = setInterval(() => {
+      const now = playerRef.current?.getCurrentTime?.();
+      if (typeof now === 'number') setTime(now);
+    }, 500);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    setTime(0);
     playerRef.current?.loadVideoById?.(currentId);
     listRef.current?.querySelector('[aria-current="true"]')?.scrollIntoView({ block: 'nearest' });
   }, [currentId, listOpen]);
@@ -146,6 +157,12 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
         // 이미 기록된 장면이거나 규칙이 아직 게시되지 않은 경우 — 조용히 넘어간다
       });
   };
+
+  // 장면 2초 전 ~ 장면 후 8초 사이면 그 장면이 "지금 보는 중". 다음 장면이 시작되면 그쪽으로 넘어간다
+  const activeT = (info?.highlights ?? []).reduce(
+    (found, item) => (time >= item.t - 3 && time <= item.t + 8 ? item.t : found),
+    null
+  );
 
   const topViews = Math.max(0, ...Object.values(views));
   const isTop = (t) => topViews >= MIN_TOP_VIEWS && views[t] === topViews;
@@ -199,8 +216,8 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
                 <ul className="hl__list">
                   {info.highlights.map((item) => (
                     <li key={item.t} className="hl__row">
-                      <div className={`hl__chip hl__chip--${item.type} ${isTop(item.t) ? 'hl__chip--top' : ''}`}>
-                        <button type="button" className="hl__seek" onClick={() => openHighlight(item.t)}>
+                      <div className={`hl__chip hl__chip--${item.type} ${isTop(item.t) ? 'hl__chip--top' : ''} ${activeT === item.t ? 'hl__chip--on' : ''}`}>
+                        <button type="button" className="hl__seek" aria-current={activeT === item.t} onClick={() => openHighlight(item.t)}>
                           <Icon name={TYPE_ICON[item.type] ?? 'pin'} />
                           <b>{clock(item.t)}</b>
                           {item.label}
