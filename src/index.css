@@ -73,7 +73,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
 .side__brand { display: flex; align-items: center; gap: 10px; height: 76px; padding: 0 22px; }
 .side__logo { flex: none; width: 26px; height: 26px; filter: drop-shadow(0 0 10px rgb(255 122 46 / 0.45)); }
 .side__brand strong { display: flex; flex-direction: column; font-size: 15px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
-.side__brand strong::after { content: 'Halloween Night'; margin-top: 3px; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ember); }
 .side__nav { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1px; padding: 8px 12px 24px; }
 .side__label { padding: 0 10px 10px; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
 .side__item { position: relative; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border-radius: 8px; text-align: left; color: var(--text-2); transition: background 0.15s, color 0.15s; }
