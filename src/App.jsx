@@ -2,12 +2,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import videos from './videos.json';
 import VideoCard from './VideoCard.jsx';
 import PlayerModal from './PlayerModal.jsx';
+import NightHero from './Halloween.jsx';
 import analysis from './analysis.json';
 import { getCommentCount } from './firebase.js';
 import { formatDate, groupByDate } from './dates.js';
 import { useInfiniteLimit, useMediaQuery } from './hooks.js';
 
 const groups = groupByDate(videos);
+const totalGoals = videos.reduce(
+  (sum, video) => sum + (analysis[video.id]?.highlights.filter((item) => item.type === 'goal').length ?? 0),
+  0
+);
 
 // 모바일은 처음 6개만 그리고, 아래로 내리면 6개씩 더 불러온다
 const MOBILE_QUERY = '(max-width: 760px)';
@@ -144,6 +149,7 @@ export default function App() {
         </header>
 
         <main className="content">
+          <NightHero videoCount={videos.length} goalCount={totalGoals} dayCount={groups.length} />
           {visible.map((group) => {
             const when = formatDate(group.date);
             return (
