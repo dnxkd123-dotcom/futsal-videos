@@ -308,3 +308,62 @@ body::before {
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 32'%3E%3Cpath d='M30 12C26 7 16 4 3 8c7 1 9 4 9 9 4-3 8-2 10 2 2-3 5-3 7 0zM34 12c4-5 14-8 27-4-7 1-9 4-9 9-4-3-8-2-10 2-2-3-5-3-7 0zM32 9c-1-3-3-4-4-4 1 2 1 4 0 5 1 4 2 7 4 8 2-1 3-4 4-8-1-1-1-3 0-5-1 0-3 1-4 4z'/%3E%3C/svg%3E") center / contain no-repeat;
   filter: drop-shadow(0 0 6px rgb(155 123 216 / 0.6));
 }
+
+/* ---------- 할로윈 디테일 — 화면 구성은 그대로 두고 작은 장식만 ---------- */
+:root { --witch: #9b7bd8; }
+* { scrollbar-color: rgb(155 123 216 / 0.3) transparent; }
+
+/* 콘텐츠 오른쪽 위 구석의 가는 거미줄 + 실에 매달린 작은 거미 */
+.main { position: relative; }
+.main::before,
+.main::after { content: ''; position: absolute; z-index: 3; pointer-events: none; }
+.main::before {
+  top: 77px;
+  right: 0;
+  width: 120px;
+  height: 120px;
+  opacity: 0.16;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%23ece2d2' stroke-width='.8'%3E%3Cpath d='M120 0L0 8M120 0L20 60M120 0L60 104M120 0L112 120'/%3E%3Cpath d='M96 2Q100 14 98 22Q106 22 118 24M72 4Q80 26 76 44Q94 42 116 48M46 5Q58 40 54 66Q80 62 115 74M20 7Q36 54 32 88Q66 84 113 100'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.main::after {
+  top: 77px;
+  right: 46px;
+  width: 16px;
+  height: 92px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 92'%3E%3Cpath d='M8 0V76' stroke='%23ece2d2' stroke-opacity='.3' stroke-width='.7'/%3E%3Cg stroke='%2308060a' stroke-width='1.1' fill='none' stroke-linecap='round'%3E%3Cpath d='M6 80L1 76L0 79M6 82L0 82L0 85M6 84L2 88L1 91M10 80L15 76L16 79M10 82L16 82L16 85M10 84L14 88L15 91'/%3E%3C/g%3E%3Ccircle cx='8' cy='79' r='2.4' fill='%2308060a'/%3E%3Cellipse cx='8' cy='84.5' rx='3.4' ry='4' fill='%2308060a'/%3E%3Ccircle cx='7.2' cy='78.6' r='.6' fill='%23ff7a2e'/%3E%3Ccircle cx='8.8' cy='78.6' r='.6' fill='%23ff7a2e'/%3E%3C/svg%3E") top center / contain no-repeat;
+  filter: drop-shadow(0 0 4px rgb(155 123 216 / 0.5));
+  transform-origin: top center;
+  animation: dangle 6s ease-in-out infinite;
+}
+@keyframes dangle { 0%, 100% { transform: scaleY(0.82); } 50% { transform: scaleY(1.06); } }
+
+/* 썸네일을 올리면 아래에서 호박빛이 번진다 */
+.card__media::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; background: linear-gradient(to top, rgb(255 110 30 / 0.32), transparent 55%); transition: opacity 0.4s var(--ease); }
+.card:hover .card__media::after { opacity: 1; }
+
+/* 재생 버튼 — 올리면 꼭지 달린 호박으로 */
+.card__play::before { content: ''; position: absolute; top: -5px; left: 50%; width: 5px; height: 8px; margin-left: -2px; border-radius: 3px 3px 1px 1px; background: #5b7a2c; transform: rotate(12deg) scaleY(0); transform-origin: bottom; transition: transform 0.25s var(--ease); }
+.card:hover .card__play, .card__thumb:focus-visible .card__play {
+  background: radial-gradient(circle at 50% 38%, #ffa24a, #f06a14 62%, #b8480b);
+  box-shadow: inset 7px 0 6px -5px rgb(120 40 0 / 0.55), inset -7px 0 6px -5px rgb(120 40 0 / 0.55), 0 0 26px rgb(255 122 46 / 0.6);
+}
+.card:hover .card__play::before, .card__thumb:focus-visible .card__play::before { transform: rotate(12deg) scaleY(1); }
+
+/* 선택 표시 줄은 촛불처럼 일렁인다 */
+.side__item--on::before, .hs__item--on::after { animation: candle 2.8s ease-in-out infinite; }
+@keyframes candle { 0%, 100% { opacity: 1; } 22% { opacity: 0.78; } 40% { opacity: 0.95; } 63% { opacity: 0.7; } 82% { opacity: 0.92; } }
+
+/* 골은 금빛으로 은은하게 */
+.card__goal .icon { filter: drop-shadow(0 0 4px rgb(242 184 75 / 0.7)); }
+
+/* 화면 아래쪽에 깔리는 옅은 보랏빛 안개 */
+.content { -webkit-mask: linear-gradient(to bottom, #000 calc(100% - 40px), rgb(0 0 0 / 0.6)); mask: linear-gradient(to bottom, #000 calc(100% - 40px), rgb(0 0 0 / 0.6)); }
+.status { position: relative; }
+.status::before { content: ''; position: absolute; left: 0; right: 0; bottom: 100%; height: 70px; pointer-events: none; background: linear-gradient(to top, rgb(120 80 190 / 0.12), transparent); animation: fog 9s ease-in-out infinite alternate; }
+@keyframes fog { to { opacity: 0.4; } }
+
+@media (max-width: 760px) {
+  .main::before, .main::after { display: none; }
+  .content { -webkit-mask: none; mask: none; }
+  .status::before { display: none; }
+}
