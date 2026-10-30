@@ -4,10 +4,12 @@ import VideoCard from './VideoCard.jsx';
 import PlayerModal from './PlayerModal.jsx';
 import analysis from './analysis.json';
 import { getCommentCount } from './firebase.js';
-import { formatDate, groupByDate } from './dates.js';
+import Icon from './icons.jsx';
+import { formatDate, formatMonth, groupByDate, groupByMonth } from './dates.js';
 import { useInfiniteLimit, useMediaQuery } from './hooks.js';
 
 const groups = groupByDate(videos);
+const months = groupByMonth(groups);
 
 // 모바일은 처음 6개만 그리고, 아래로 내리면 6개씩 더 불러온다
 const MOBILE_QUERY = '(max-width: 760px)';
@@ -46,11 +48,21 @@ export default function App() {
     setPlayingId(id);
     setStartAt(0);
   }, []);
+  // 'all' · 월('2026-10') · 하루('2026-10-22')
   const [selected, setSelected] = useState('all');
+  const [openMonth, setOpenMonth] = useState(months[0]?.key ?? null); // 일자 목록이 펼쳐진 달
+  const pickMonth = (key) => {
+    // 이미 보고 있는 달을 다시 누르면 접기만 한다
+    setOpenMonth((now) => (now === key && selected === key ? null : key));
+    setSelected(key);
+  };
   const [sort, setSort] = useState('new');
 
   const shown = useMemo(() => {
-    const list = selected === 'all' ? groups : groups.filter((group) => group.date === selected);
+    const list =
+      selected === 'all'
+        ? groups
+        : groups.filter((group) => group.date === selected || group.date.startsWith(`${selected}-`));
     return sort === 'new' ? list : [...list].reverse();
   }, [selected, sort]);
   // 팝업 재생목록 = 지금 화면에 보이는 순서 그대로
@@ -109,23 +121,45 @@ export default function App() {
           >
             전체
           </SideItem>
-          {groups.map((group) => (
-            <SideItem
-              key={group.date}
-              active={selected === group.date}
-              onClick={() => setSelected(group.date)}
-              desc={`영상 ${group.items.length}개`}
-            >
-              {formatDate(group.date).short}
-            </SideItem>
-          ))}
+          {months.map((month) => {
+            const open = openMonth === month.key;
+            return (
+              <div key={month.key} className={`side__month ${open ? 'side__month--open' : ''}`}>
+                <SideItem
+                  active={selected === month.key}
+                  onClick={() => pickMonth(month.key)}
+                  desc={`영상 ${month.count}개 · ${month.groups.length}일`}
+                  expanded={open}
+                >
+                  {formatMonth(month.key).short}
+                </SideItem>
+                {open && (
+                  <div className="side__days">
+                    {month.groups.map((group) => (
+                      <SideItem
+                        key={group.date}
+                        sub
+                        active={selected === group.date}
+                        onClick={() => setSelected(group.date)}
+                        desc={`${group.items.length}개`}
+                      >
+                        {formatDate(group.date).dayShort}
+                      </SideItem>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </nav>
       </aside>
 
       <div className="main">
         <header className="bar">
           <div className="bar__path">
-            <strong>{selected === 'all' ? '전체 영상' : formatDate(selected).long}</strong>
+            <strong>
+              {selected === 'all' ? '전체 영상' : selected.length === 7 ? formatMonth(selected).long : formatDate(selected).long}
+            </strong>
             <span>{shownCount}개</span>
           </div>
           <div className="seg" role="group" aria-label="정렬">
@@ -201,15 +235,19 @@ export default function App() {
   );
 }
 
-function SideItem({ active, onClick, desc, children }) {
+function SideItem({ active, onClick, desc, expanded, sub, children }) {
   return (
     <button
       type="button"
-      className={`side__item ${active ? 'side__item--on' : ''}`}
+      className={`side__item ${sub ? 'side__item--sub' : ''} ${active ? 'side__item--on' : ''}`}
       aria-current={active ? 'page' : undefined}
+      aria-expanded={expanded}
       onClick={onClick}
     >
-      <span className="side__name">{children}</span>
+      <span className="side__name">
+        {children}
+        {expanded !== undefined && <Icon name="chevron" size={14} className="side__chev" />}
+      </span>
       <span className="side__desc">{desc}</span>
     </button>
   );

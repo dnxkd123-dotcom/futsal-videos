@@ -8,6 +8,7 @@ export function formatDate(date) {
   const day = new Date(y, m - 1, d).getDay();
   return {
     short: `${m}.${d} (${WEEKDAYS[day]})`,
+    dayShort: `${d}일 (${WEEKDAYS[day]})`,
     md: `${m}.${String(d).padStart(2, '0')}`,
     title: `${m}월 ${d}일`,
     day: String(d).padStart(2, '0'),
@@ -31,6 +32,25 @@ export function groupByDate(videos) {
       date,
       items: [...items].sort((a, b) => a.title.localeCompare(b.title))
     }));
+}
+
+/** '2026-10' → { short: '10월', long: '2026년 10월' } */
+export function formatMonth(key) {
+  const [y, m] = key.split('-').map(Number);
+  return { short: `${m}월`, long: `${y}년 ${m}월` };
+}
+
+/** 날짜 묶음(groupByDate 결과, 최신순)을 다시 달별로 묶는다 */
+export function groupByMonth(groups) {
+  const months = [];
+  for (const group of groups) {
+    const key = group.date.slice(0, 7);
+    let month = months.at(-1);
+    if (month?.key !== key) months.push((month = { key, groups: [], count: 0 }));
+    month.groups.push(group);
+    month.count += group.items.length;
+  }
+  return months;
 }
 
 /** 제목이 YYYYMMDDNN 이면 'N번째 영상'으로, 아니면 제목 그대로 */

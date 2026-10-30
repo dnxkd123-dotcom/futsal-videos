@@ -84,6 +84,16 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
 .side__item--on .side__name { font-weight: 600; }
 .side__item--on .side__desc { color: var(--ember-2); }
 
+/* 달 → 펼치면 그 달의 일자 */
+.side__name { display: inline-flex; align-items: center; gap: 6px; }
+.side__chev { color: var(--dim); transform: rotate(-90deg); transition: transform 0.2s var(--ease); }
+.side__item[aria-expanded='true'] .side__chev { transform: none; }
+.side__days { display: flex; flex-direction: column; gap: 1px; margin: 2px 0 6px 14px; padding-left: 6px; border-left: 1px solid var(--line); }
+.side__item--sub { padding: 6px 10px; }
+.side__item--sub .side__name { font-size: 13px; }
+.side__item--sub .side__desc { font-size: 11.5px; }
+.side__month:has(.side__item--sub.side__item--on) > .side__item .side__name { color: var(--text); }
+
 .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
 /* ---------- 위쪽 · 아래쪽 띠 ---------- */
@@ -255,6 +265,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
   .side__nav { flex-direction: row; overflow-x: auto; overflow-y: hidden; padding: 8px 12px 8px 0; scrollbar-width: none; }
   .side__item { flex: none; width: auto; padding: 6px 12px; border-radius: 999px; }
   .side__item--on::before { display: none; }
+  .side__month, .side__days { display: contents; }
+  .side__item--sub { padding: 6px 11px; background: var(--raise); }
+  .side__item--sub .side__name { font-size: 13px; }
   .side__item--on, .side__item--on:hover { box-shadow: inset 0 0 0 1px var(--ember-line); }
   .bar { min-height: 60px; padding: 0 16px; }
   .status { padding: 0 16px; }
