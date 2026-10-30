@@ -367,3 +367,142 @@ body::before {
   .content { -webkit-mask: none; mask: none; }
   .status::before { display: none; }
 }
+
+/* ---------- 으스스한 공기 — 어둠, 안개, 번개, 어둠 속의 눈 ---------- */
+
+/* 가장자리로 갈수록 어두워지는 비네트 (팝업보다는 아래) */
+#root::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background: radial-gradient(130% 100% at 55% 40%, transparent 55%, rgb(0 0 0 / 0.55) 100%);
+}
+/* 가끔 멀리서 번개가 친다 */
+#root::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 41;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(120% 80% at 70% 0%, rgb(205 210 255 / 0.9), rgb(160 140 255 / 0.25) 60%, transparent);
+  mix-blend-mode: overlay;
+  animation: lightning 17s linear infinite;
+}
+@keyframes lightning {
+  0%, 90%, 100% { opacity: 0; }
+  90.6% { opacity: 0.35; }
+  91.2% { opacity: 0.05; }
+  92% { opacity: 0.5; }
+  94% { opacity: 0; }
+}
+
+/* 바닥을 기어가는 두 겹의 안개 */
+.status::before { display: none; }
+.app::before,
+.app::after {
+  content: '';
+  position: fixed;
+  left: -30%;
+  right: -30%;
+  bottom: -40px;
+  z-index: 39;
+  pointer-events: none;
+  height: 260px;
+  filter: blur(18px);
+}
+.app::before {
+  background:
+    radial-gradient(28% 45% at 20% 70%, rgb(170 150 220 / 0.16), transparent 70%),
+    radial-gradient(24% 40% at 55% 80%, rgb(170 150 220 / 0.13), transparent 70%),
+    radial-gradient(30% 50% at 85% 65%, rgb(170 150 220 / 0.15), transparent 70%);
+  animation: fog-a 26s ease-in-out infinite alternate;
+}
+.app::after {
+  height: 180px;
+  background:
+    radial-gradient(30% 50% at 35% 80%, rgb(200 190 230 / 0.1), transparent 70%),
+    radial-gradient(26% 45% at 72% 85%, rgb(200 190 230 / 0.1), transparent 70%);
+  animation: fog-b 19s ease-in-out infinite alternate;
+}
+@keyframes fog-a { to { transform: translateX(12%); } }
+@keyframes fog-b { from { transform: translateX(8%); } to { transform: translateX(-10%); } }
+
+/* 어둠 속에서 깜빡이는 눈 — 사이드바 아래 */
+.side { position: relative; }
+.side::before {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  width: 26px;
+  height: 7px;
+  background:
+    radial-gradient(closest-side, #ffe58a, #ff9a2e 55%, transparent) 0 0 / 9px 7px no-repeat,
+    radial-gradient(closest-side, #ffe58a, #ff9a2e 55%, transparent) 17px 0 / 9px 7px no-repeat;
+  filter: drop-shadow(0 0 5px rgb(255 140 40 / 0.9));
+  animation: blink 7s ease-in-out infinite;
+}
+.side::before { left: 30px; bottom: 90px; }
+@keyframes blink {
+  0%, 30%, 100% { opacity: 0; transform: scaleY(1); }
+  36%, 60% { opacity: 0.85; transform: scaleY(1); }
+  62% { transform: scaleY(0.1); }
+  64%, 74% { opacity: 0.85; transform: scaleY(1); }
+  80% { opacity: 0; }
+}
+/* 사이드바 아래 구석 거미줄 */
+.side::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 110px;
+  height: 110px;
+  pointer-events: none;
+  opacity: 0.13;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none' stroke='%23ece2d2' stroke-width='.8'%3E%3Cpath d='M0 120L120 112M0 120L100 60M0 120L60 16M0 120L8 0'/%3E%3Cpath d='M24 118Q20 106 22 98Q14 98 2 96M48 116Q40 94 44 76Q26 78 4 72M74 115Q62 80 66 54Q40 58 5 46M100 113Q84 66 88 32Q54 36 7 20'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* 콘텐츠 뒤로 박쥐가 가끔 휙 지나간다 */
+html::before {
+  content: '';
+  position: fixed;
+  top: 18%;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+  width: 46px;
+  height: 23px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 32' fill='%23050307'%3E%3Cpath d='M30 12C26 7 16 4 3 8c7 1 9 4 9 9 4-3 8-2 10 2 2-3 5-3 7 0zM34 12c4-5 14-8 27-4-7 1-9 4-9 9-4-3-8-2-10 2-2-3-5-3-7 0zM32 9c-1-3-3-4-4-4 1 2 1 4 0 5 1 4 2 7 4 8 2-1 3-4 4-8-1-1-1-3 0-5-1 0-3 1-4 4z'/%3E%3C/svg%3E") center / contain no-repeat;
+  filter: drop-shadow(0 0 6px rgb(155 123 216 / 0.5));
+  animation: bat-fly 23s linear infinite, bat-flap 0.18s ease-in-out infinite alternate;
+}
+@keyframes bat-fly {
+  0% { transform: translate(-80px, 40px) rotate(6deg); }
+  14% { transform: translate(45vw, -30px) rotate(-6deg); }
+  28% { transform: translate(calc(100vw + 80px), 20px) rotate(4deg); }
+  100% { transform: translate(calc(100vw + 80px), 20px); }
+}
+@keyframes bat-flap { to { scale: 1 0.45; } }
+
+/* 썸네일은 차가운 달빛 톤으로 가라앉아 있다가, 올리면 호박빛으로 살아난다 */
+.card__thumb img { filter: saturate(0.6) brightness(0.7) contrast(1.08); }
+.card:hover .card__thumb img { filter: none; }
+.card__media::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: #3a4a8c; mix-blend-mode: color; opacity: 0.5; transition: opacity 0.5s var(--ease); }
+.card:hover .card__media::before { opacity: 0; }
+
+/* 날짜 제목은 꺼질 듯 말 듯한 촛불빛 */
+.day__head { text-shadow: 0 0 18px rgb(255 122 46 / 0.28); animation: dim 11s linear infinite; }
+@keyframes dim { 0%, 86%, 100% { opacity: 1; } 87% { opacity: 0.55; } 88% { opacity: 1; } 89.5% { opacity: 0.7; } 91% { opacity: 1; } }
+
+/* 바탕을 조금 더 깊은 어둠으로 */
+:root { --bg: #08070a; }
+
+@media (max-width: 760px) {
+  .side::before, .side::after { display: none; }
+  .app::before { height: 180px; }
+  html::before { width: 34px; height: 17px; animation-duration: 19s, 0.18s; }
+}
