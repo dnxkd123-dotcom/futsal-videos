@@ -53,10 +53,10 @@ export function groupByMonth(groups) {
   return months;
 }
 
-/** 제목이 YYYYMMDDNN 이면 'N번째 영상'으로, 아니면 제목 그대로 */
+/** 제목이 YYYYMMDDNN 이면 '10월 29일 N번째 영상'으로, 아니면 제목 그대로 */
 export function displayTitle(title) {
-  const match = /^\d{8}(\d{2})$/.exec(title);
-  return match ? `${Number(match[1])}번째 영상` : title;
+  const match = /^\d{4}(\d{2})(\d{2})(\d{2})$/.exec(title);
+  return match ? `${Number(match[1])}월 ${Number(match[2])}일 ${Number(match[3])}번째 영상` : title;
 }
 
 /** 90 → '1:30' */
