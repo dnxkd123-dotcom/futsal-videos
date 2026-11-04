@@ -184,11 +184,11 @@ export default function Comments({ videoId, getTime, onSeek }) {
           onChange={(event) => setText(event.target.value)}
         />
         <div className="cm__actions">
-          <button type="button" className="seg__item modal__btn" aria-pressed={attached !== null} onClick={toggleTime}>
+          <button type="button" className="btn" aria-pressed={attached !== null} onClick={toggleTime}>
             <Icon name="clock" />
             {attached === null ? '현재 시각 붙이기' : `${clock(attached)} 붙음 (취소)`}
           </button>
-          <button type="submit" className="seg__item modal__btn cm__send" disabled={sending}>
+          <button type="submit" className="btn btn--primary" disabled={sending}>
             {sending ? '등록 중…' : '등록'}
           </button>
         </div>

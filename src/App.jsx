@@ -27,6 +27,15 @@ function takeFirst(list, limit) {
   return result;
 }
 
+/** 골 시각 목록 — 아직 분석하지 않은 영상은 null */
+function goalTimesOf(id) {
+  return analysis[id]?.highlights.filter((item) => item.type === 'goal').map((item) => item.t) ?? null;
+}
+
+function countGoals(items) {
+  return items.reduce((sum, video) => sum + (goalTimesOf(video.id)?.length ?? 0), 0);
+}
+
 const SORTS = [
   { id: 'new', label: '최신순' },
   { id: 'old', label: '오래된순' }
@@ -48,6 +57,11 @@ export default function App() {
     setPlayingId(id);
     setStartAt(0);
   }, []);
+  // 카드의 골 시각에서 열 때는 장면 직전(2초 앞)부터
+  const playAt = (id, t) => {
+    setPlayingId(id);
+    setStartAt(t > 0 ? Math.max(0, t - 2) : 0);
+  };
   // 'all' · 월('2026-10') · 하루('2026-10-22')
   const [selected, setSelected] = useState('all');
   const [openMonth, setOpenMonth] = useState(months[0]?.key ?? null); // 일자 목록이 펼쳐진 달
@@ -55,6 +69,11 @@ export default function App() {
     // 이미 보고 있는 달을 다시 누르면 접기만 한다
     setOpenMonth((now) => (now === key && selected === key ? null : key));
     setSelected(key);
+  };
+  // 폰 · 태블릿의 날짜 선택 상자 — 고른 날의 달을 사이드바에서도 펼쳐 둔다
+  const pickScope = (value) => {
+    if (value !== 'all') setOpenMonth(value.slice(0, 7));
+    setSelected(value);
   };
   const [sort, setSort] = useState('new');
 
@@ -74,6 +93,12 @@ export default function App() {
     setCountsVersion((n) => n + 1);
   }, []);
   const shownCount = shown.reduce((sum, group) => sum + group.items.length, 0);
+  const shownGoals = shown.reduce((sum, group) => sum + countGoals(group.items), 0);
+  const isDay = selected.length === 10;
+  const title = selected === 'all' ? '전체 영상' : isDay ? formatDate(selected).long : formatMonth(selected).long;
+  const summary = [!isDay && `경기일 ${shown.length}일`, `영상 ${shownCount}개`, `골 ${shownGoals}개`]
+    .filter(Boolean)
+    .join(' · ');
 
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const { limit, hasMore, sentinelRef } = useInfiniteLimit({
@@ -108,27 +133,23 @@ export default function App() {
     <div className="app">
       <aside className="side">
         <div className="side__brand">
-          <img className="side__logo" src="./favicon.png" alt="" width="26" height="26" />
+          <img className="side__logo" src="./favicon.png" alt="" width="24" height="24" />
           <strong>우탕 풋살 영상</strong>
         </div>
 
         <nav className="side__nav" aria-label="날짜 선택">
           <h2 className="side__label">날짜</h2>
-          <SideItem
-            active={selected === 'all'}
-            onClick={() => setSelected('all')}
-            desc={`영상 ${videos.length}개 · ${groups.length}일`}
-          >
+          <SideItem active={selected === 'all'} onClick={() => setSelected('all')} count={videos.length}>
             전체
           </SideItem>
           {months.map((month) => {
             const open = openMonth === month.key;
             return (
-              <div key={month.key} className={`side__month ${open ? 'side__month--open' : ''}`}>
+              <div key={month.key} className="side__month">
                 <SideItem
                   active={selected === month.key}
                   onClick={() => pickMonth(month.key)}
-                  desc={`영상 ${month.count}개 · ${month.groups.length}일`}
+                  count={month.count}
                   expanded={open}
                 >
                   {formatMonth(month.key).short}
@@ -138,10 +159,9 @@ export default function App() {
                     {month.groups.map((group) => (
                       <SideItem
                         key={group.date}
-                        sub
                         active={selected === group.date}
                         onClick={() => setSelected(group.date)}
-                        desc={`${group.items.length}개`}
+                        count={group.items.length}
                       >
                         {formatDate(group.date).dayShort}
                       </SideItem>
@@ -155,45 +175,70 @@ export default function App() {
       </aside>
 
       <div className="main">
-        <header className="bar">
-          <div className="bar__path">
-            <strong>
-              {selected === 'all' ? '전체 영상' : selected.length === 7 ? formatMonth(selected).long : formatDate(selected).long}
-            </strong>
-            <span>{shownCount}개</span>
-          </div>
-          <div className="seg" role="group" aria-label="정렬">
-            {SORTS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className="seg__item"
-                aria-pressed={sort === item.id}
-                onClick={() => setSort(item.id)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </header>
-
         <main className="content">
+          <header className="head">
+            <div>
+              <h1 className="head__title">{title}</h1>
+              <p className="head__sub">{summary}</p>
+            </div>
+            <div className="head__tools">
+              {/* 폰 · 태블릿에서는 사이드바 대신 이 선택 상자로 날짜를 고른다 */}
+              <select className="scope" value={selected} onChange={(event) => pickScope(event.target.value)} aria-label="날짜 선택">
+                <option value="all">전체 · {videos.length}개</option>
+                {months.map((month) => (
+                  <optgroup key={month.key} label={formatMonth(month.key).long}>
+                    <option value={month.key}>
+                      {formatMonth(month.key).short} 전체 · {month.count}개
+                    </option>
+                    {month.groups.map((group) => (
+                      <option key={group.date} value={group.date}>
+                        {formatDate(group.date).dayShort} · {group.items.length}개
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              <div className="seg" role="group" aria-label="정렬">
+                {SORTS.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="seg__item"
+                    aria-pressed={sort === item.id}
+                    onClick={() => setSort(item.id)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </header>
+
           {visible.map((group) => {
             const when = formatDate(group.date);
             return (
-              <section key={group.date} className="day">
-                <h2 className="day__head">
-                  {when.title} <span>{when.weekday} · {group.items.length}개</span>
-                </h2>
+              <section key={group.date} className="day" aria-label={when.long}>
+                {/* 하루만 고르면 화면 제목이 곧 그날이라 날짜 제목을 또 달지 않는다 */}
+                {!isDay && (
+                  <div className="day__head">
+                    <h2 aria-label={`${when.title} ${when.weekdayLong}`}>
+                      <span className="day__date">{when.md}</span>
+                      <span className="day__week">{when.weekdayLong}</span>
+                    </h2>
+                    <span>
+                      영상 {group.items.length}개 · 골 {countGoals(group.items)}개
+                    </span>
+                  </div>
+                )}
                 <ul className="grid">
-                  {group.items.map((video, index) => (
+                  {group.items.map((video) => (
                     <li key={video.id}>
                       <VideoCard
                         video={video}
-                        index={index + 1}
                         commentCount={counts[video.id]}
-                        goals={analysis[video.id]?.highlights.filter((item) => item.type === 'goal').length}
-                        onPlay={() => selectVideo(video.id)}
+                        goalTimes={goalTimesOf(video.id)}
+                        highlightCount={analysis[video.id]?.highlights.length ?? 0}
+                        onPlay={(t) => playAt(video.id, t)}
                       />
                     </li>
                   ))}
@@ -205,21 +250,12 @@ export default function App() {
           {isMobile &&
             (hasMore ? (
               <p ref={sentinelRef} className="more" role="status">
-                <span className="more__ball" aria-hidden="true" />
                 불러오는 중…
               </p>
             ) : (
-              <p className="more more--end">
-                <img src="./favicon.png" alt="" width="28" height="28" />
-                마지막 영상이에요! 총 {shownCount}개
-              </p>
+              <p className="more">영상 {shownCount}개를 모두 봤어요</p>
             ))}
         </main>
-
-        <footer className="status">
-          <span>{shownCount}개 영상</span>
-          <span>썸네일을 누르면 재생돼요</span>
-        </footer>
 
         {playingId && (
           <PlayerModal
@@ -235,11 +271,11 @@ export default function App() {
   );
 }
 
-function SideItem({ active, onClick, desc, expanded, sub, children }) {
+function SideItem({ active, onClick, count, expanded, children }) {
   return (
     <button
       type="button"
-      className={`side__item ${sub ? 'side__item--sub' : ''} ${active ? 'side__item--on' : ''}`}
+      className={`side__item ${active ? 'side__item--on' : ''}`}
       aria-current={active ? 'page' : undefined}
       aria-expanded={expanded}
       onClick={onClick}
@@ -248,7 +284,9 @@ function SideItem({ active, onClick, desc, expanded, sub, children }) {
         {children}
         {expanded !== undefined && <Icon name="chevron" size={14} className="side__chev" />}
       </span>
-      <span className="side__desc">{desc}</span>
+      <span className="side__count" aria-label={`영상 ${count}개`}>
+        {count}
+      </span>
     </button>
   );
 }

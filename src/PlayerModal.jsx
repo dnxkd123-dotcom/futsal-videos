@@ -24,7 +24,9 @@ function saveViewed(set) {
   }
 }
 
-const TYPE_LABEL = { goal: '골', shot: '슈팅', save: '선방', play: '플레이', foul: '파울', other: '기타' };
+const goalCount = (id) => analysis[id]?.highlights.filter((item) => item.type === 'goal').length ?? 0;
+
+const TYPE_LABEL ={ goal: '골', shot: '슈팅', save: '선방', play: '플레이', foul: '파울', other: '기타' };
 const TYPE_ICON = { goal: 'ball', shot: 'net', save: 'shield', play: 'pass', foul: 'card', other: 'pin' };
 
 let apiPromise;
@@ -195,27 +197,25 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
               <span>{formatDate(current.date).long}</span>
             </div>
             <div className="modal__nav">
-              <button type="button" className="seg__item modal__btn" onClick={copyNow} title="지금 보고 있는 시각부터 열리는 링크를 복사해요">
-                {copiedT === 'now' ? <><Icon name="check" /> 복사됨</> : <><Icon name="link" /> 지금 시각 링크</>}
+              <button type="button" className="btn" onClick={copyNow}>
+                {copiedT === 'now' ? <><Icon name="check" /> 복사됨</> : <><Icon name="link" /> 이 시각부터 링크 복사</>}
               </button>
-              <button type="button" className="seg__item modal__btn" disabled={!prev} onClick={() => onSelect(prev.id)}>
+              <button type="button" className="btn" disabled={!prev} onClick={() => onSelect(prev.id)}>
                 ← 이전
               </button>
-              <button type="button" className="seg__item modal__btn" disabled={!next} onClick={() => onSelect(next.id)}>
+              <button type="button" className="btn" disabled={!next} onClick={() => onSelect(next.id)}>
                 다음 →
               </button>
             </div>
-            <p className="modal__hint">
-              <Icon name="link" size={14} />
-              <span>링크 버튼은 그 장면부터 열리는 주소를 복사해요. 지금 보는 장면은 위 버튼, 하이라이트는 각 장면 오른쪽 버튼이에요.</span>
-            </p>
           </div>
 
           {info && (
             <section className="hs">
               <header className="hs__head">
                 <h3>하이라이트</h3>
-                <span>{info.highlights.length}장면</span>
+                <span>
+                  {info.highlights.length}장면 · 골 {goalCount(current.id)}개
+                </span>
               </header>
               {info.highlights.length > 0 && (
                 <ol className="hs__list">
@@ -298,7 +298,10 @@ export default function PlayerModal({ playlist, currentId, startAt = 0, onSelect
                     <img src={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg`} alt="" loading="lazy" />
                     <span>
                       <b>{displayTitle(video.title)}</b>
-                      <small>{formatDate(video.date).short}</small>
+                      <small>
+                        {formatDate(video.date).short}
+                        {analysis[video.id] && ` · 골 ${goalCount(video.id)}`}
+                      </small>
                     </span>
                   </button>
                 </li>

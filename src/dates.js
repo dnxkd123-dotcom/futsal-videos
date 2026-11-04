@@ -15,6 +15,7 @@ export function formatDate(date) {
     month: MONTHS_EN[m - 1],
     year: String(y),
     weekday: WEEKDAYS_EN[day],
+    weekdayLong: `${WEEKDAYS[day]}요일`,
     long: `${y}년 ${m}월 ${d}일 ${WEEKDAYS[day]}요일`
   };
 }
@@ -57,6 +58,12 @@ export function groupByMonth(groups) {
 export function displayTitle(title) {
   const match = /^\d{4}(\d{2})(\d{2})(\d{2})$/.exec(title);
   return match ? `${Number(match[1])}월 ${Number(match[2])}일 ${Number(match[3])}번째 영상` : title;
+}
+
+/** 날짜 제목 아래에서 쓰는 짧은 이름 — 'YYYYMMDDNN' 이면 'N번째 영상', 아니면 제목 그대로 */
+export function shortTitle(title) {
+  const match = /^\d{8}(\d{2})$/.exec(title);
+  return match ? `${Number(match[1])}번째 영상` : title;
 }
 
 /** 90 → '1:30' */
