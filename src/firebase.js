@@ -1,5 +1,5 @@
 // 웹 앱용 Firebase 설정값은 공개돼도 괜찮다 — 보안은 firestore.rules 가 책임진다
-const config = {
+export const config = {
   apiKey: 'AIzaSyDhazUp4y8JP3tiRh_S0td7gbQ88QZ3Si0',
   authDomain: 'wootang-76088.firebaseapp.com',
   projectId: 'wootang-76088',

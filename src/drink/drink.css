@@ -1,0 +1,98 @@
+/* 음료수 당번 — 영상 페이지와 같은 색 · 글꼴 (틀 위에 흰 카드) */
+:root {
+  color-scheme: light;
+  --frame: #f3f6f4;
+  --surface: #fff;
+  --raised: #f4f6f5;
+  --active: #e7ebe8;
+  --border: #e8eaec;
+  --rule: #f0f1f2;
+  --control: #cdced1;
+  --text: #131416;
+  --muted: #5d5f60;
+  --accent: #1b6c80;
+  --accent-soft: #e8f1f3;
+  --negative: #c4242a;
+  --primary: #131416;
+  --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  --num: 'Barlow Condensed', 'Pretendard Variable', Pretendard, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font-family: var(--font); font-size: 14px; line-height: 1.5; font-variant-numeric: tabular-nums; color: var(--text); background: var(--frame); -webkit-font-smoothing: antialiased; }
+button, input { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; }
+button:disabled { cursor: default; opacity: 0.5; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.dk { max-width: 560px; margin: 0 auto; padding: 24px 16px 64px; display: flex; flex-direction: column; gap: 12px; }
+.dk--lock { min-height: 100vh; justify-content: center; align-items: center; }
+.dk-muted { color: var(--muted); }
+.dk-error { color: var(--negative); font-size: 13px; }
+.dk-banner { padding: 10px 14px; border-radius: 8px; background: #fbeced; }
+
+/* 잠금 화면 */
+.dk-lock { width: 100%; max-width: 320px; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 32px 24px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); text-align: center; }
+.dk-lock h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+.dk-lock .dk-input, .dk-lock .dk-btn { width: 100%; }
+
+/* 입력 · 버튼 */
+.dk-input { height: 40px; padding: 0 12px; border: 1px solid var(--control); border-radius: 6px; background: var(--surface); font-size: 15px; min-width: 0; }
+.dk-input[aria-invalid='true'] { border-color: var(--negative); }
+.dk-btn { height: 36px; padding: 0 14px; border: 1px solid var(--control); border-radius: 6px; background: var(--surface); font-weight: 500; white-space: nowrap; transition: background 0.15s; }
+.dk-btn:hover:not(:disabled) { background: var(--raised); }
+.dk-btn--primary { height: 40px; border-color: var(--primary); background: var(--primary); color: #fff; }
+.dk-btn--primary:hover:not(:disabled) { background: #2b2d30; }
+.dk-btn--small { height: 30px; padding: 0 10px; font-size: 13px; }
+.dk-btn--quiet { border-color: transparent; color: var(--muted); }
+
+/* 머리 */
+.dk-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 8px 4px 12px; }
+.dk-head h1 { font-size: 26px; font-weight: 700; line-height: 1.25; letter-spacing: -0.025em; }
+
+/* 카드 */
+.dk-card { padding: 20px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.dk-card h2 { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+.dk-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.dk-links { display: flex; gap: 12px; }
+.dk-links button { font-size: 13px; color: var(--muted); }
+.dk-links button:hover { color: var(--text); }
+.dk-empty { text-align: center; color: var(--muted); }
+
+/* 이름 칩 — 누르면 청록 */
+.dk-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.dk-chip { display: inline-flex; align-items: center; gap: 4px; height: 34px; padding: 0 14px; border: 1px solid var(--control); border-radius: 999px; background: var(--surface); font-size: 14px; transition: background 0.15s, border-color 0.15s; }
+.dk-chip[aria-pressed='true'] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.dk-chip--static { padding: 0 6px 0 12px; background: var(--raised); border-color: transparent; }
+.dk-chip--static button { width: 22px; height: 22px; border-radius: 50%; color: var(--muted); font-size: 16px; line-height: 1; }
+.dk-chip--static button:hover:not(:disabled) { background: var(--active); color: var(--text); }
+
+/* 오늘의 당번 */
+.dk-pick { text-align: center; padding: 28px 20px; }
+.dk-pick__label { font-size: 13px; font-weight: 600; color: var(--accent); }
+.dk-pick__name { margin: 2px 0 4px; font-size: 40px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; overflow-wrap: anywhere; }
+.dk-pick__actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 20px; }
+.dk-date { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 4px 0 12px; border: 1px solid var(--control); border-radius: 6px; font-size: 13px; color: var(--muted); }
+.dk-date input { height: 100%; border: 0; background: none; color: var(--text); font-size: 14px; }
+.dk-done { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 14px; font-size: 13px; color: var(--muted); }
+.dk-done button { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+
+/* 순서 · 기록 목록 */
+.dk-list { list-style: none; padding: 0; }
+.dk-item { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 0; border-top: 1px solid var(--rule); }
+.dk-item:first-child { border-top: 0; }
+.dk-item__rank, .dk-item__date { flex: none; font-family: var(--num); font-size: 22px; font-weight: 600; color: var(--muted); }
+.dk-item__rank { width: 24px; text-align: center; }
+.dk-item:first-child .dk-item__rank { color: var(--accent); }
+.dk-item__date { width: 48px; font-size: 20px; }
+.dk-item__main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.dk-item__main strong { font-weight: 600; overflow-wrap: anywhere; }
+.dk-item__main .dk-muted { font-size: 12px; }
+.dk-note { margin-top: 12px; font-size: 12px; color: var(--muted); }
+.dk-more { width: 100%; height: 36px; margin-top: 8px; border-radius: 6px; color: var(--muted); font-size: 13px; }
+.dk-more:hover { background: var(--raised); color: var(--text); }
+
+/* 멤버 추가 */
+.dk-add { display: flex; gap: 8px; margin-bottom: 12px; }
+.dk-add .dk-input { flex: 1; }
+.dk-add .dk-btn { height: 40px; }
+.dk-add + .dk-error { margin: -6px 0 10px; }

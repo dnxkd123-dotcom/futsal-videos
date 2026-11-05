@@ -2,6 +2,11 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // 음료수 당번 전용 계정 — src/drink/store.js 의 DRINK_EMAIL 과 같아야 한다
+    function isDrinkUser() {
+      return request.auth != null && request.auth.token.email == 'drink@wootang.kro.kr';
+    }
+
     // 공개 댓글 — 누구나 읽고, 익명 로그인한 사람만 쓴다. 삭제는 쓴 사람(같은 uid)만.
     match /videos/{videoId}/comments/{commentId} {
       allow read: if true;
@@ -31,6 +36,18 @@ service cloud.firestore {
         && request.resource.data.t >= 0 && request.resource.data.t <= 86400
         && viewId == string(request.resource.data.t) + '_' + request.auth.uid;
       allow update, delete: if false;
+    }
+
+    // 음료수 당번 (/drink/) — 멤버와 구매 기록을 문서 하나(drink/state)에 둔다.
+    // 당번 전용 계정(이메일/비밀번호 로그인)으로 들어온 사람만 읽고 쓴다. 익명 로그인으로는 못 본다.
+    match /drink/{docId} {
+      allow read: if docId == 'state' && isDrinkUser();
+      allow create, update: if docId == 'state' && isDrinkUser()
+        && request.resource.data.keys().hasOnly(['members', 'history', 'updatedAt'])
+        && request.resource.data.members is list && request.resource.data.members.size() <= 100
+        && request.resource.data.history is list && request.resource.data.history.size() <= 5000
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if false;
     }
 
     // 비공개 기록(IP·기기 정보) — 쓰기만 가능하고 아무도 읽을 수 없다. 관리자는 콘솔에서 확인.
