@@ -5,7 +5,7 @@
  *   npm run analyze -- 영상ID     그 영상만 (이미 있어도 다시)
  *   npm run analyze -- --force   전부 다시
  *   npm run analyze -- 영상ID --dry   저장하지 않고 결과만 출력 (프롬프트 시험용)
- *   --no-verify                  2단계 골 검증을 건너뛴다 (빠르지만 덜 정확)
+ *   --no-verify                  2단계 골 검증을 건너뛴다 (빠르지만 덜 정확). .env 의 ANALYZE_NO_VERIFY=1 도 같다
  *   --near-goal-hidden           카메라 쪽(가까운) 골대가 화면에 잘 안 잡힌 촬영본용.
  *                                그쪽 골은 공이 들어가는 순간 대신 '경기가 어떻게 다시 시작되는지'로 판정하고,
  *                                클립을 더 길게 잘라 재시작 장면까지 보이게 한다. (예: 2026-11-05 경기)
@@ -19,6 +19,7 @@
  * 키는 .env 의 GEMINI_API_KEY — 사이트 코드에는 들어가지 않는다.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
+import { request } from 'node:https';
 
 const VIDEOS = new URL('../src/videos.json', import.meta.url);
 const ANALYSIS = new URL('../src/analysis.json', import.meta.url);
@@ -143,19 +144,56 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const youtube = (id) => ({ fileUri: `https://www.youtube.com/watch?v=${id}` });
 const clock = (t) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
 
+/**
+ * POST → { ok, status, data }. 내장 fetch 는 응답 머리글을 5분까지만 기다리고 'fetch failed' 로 끊어 버리는데,
+ * 긴 영상은 Gemini 가 5분 넘게 생각하기도 해서 기다리는 시간 제한이 없는 https 모듈을 쓴다.
+ */
+function postJson(url, headers, body) {
+  return new Promise((resolve, reject) => {
+    const req = request(url, { method: 'POST', headers: { ...headers, 'Content-Length': Buffer.byteLength(body) } }, (res) => {
+      const chunks = [];
+      res.on('data', (chunk) => chunks.push(chunk));
+      res.on('end', () => {
+        const raw = Buffer.concat(chunks).toString('utf8');
+        let data;
+        try {
+          data = JSON.parse(raw);
+        } catch {
+          data = { error: { message: `응답을 읽을 수 없어요 (${res.statusCode}): ${raw.slice(0, 200)}` } };
+        }
+        resolve({ ok: res.statusCode >= 200 && res.statusCode < 300, status: res.statusCode, data });
+      });
+      res.on('error', reject);
+    });
+    req.setTimeout(0);
+    req.on('error', reject);
+    req.end(body);
+  });
+}
+
 /** Gemini 호출 → JSON. 서버가 바쁘다(429·503)고 하면 조금씩 더 기다렸다가 다시 시도한다 */
 async function callGemini(model, parts, schema, extraConfig = {}) {
   for (let attempt = 1; ; attempt += 1) {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': KEY },
-      body: JSON.stringify({
-        contents: [{ parts }],
-        // temperature 를 낮춰서 같은 영상을 다시 돌려도 결과가 덜 흔들리게 한다
-        generationConfig: { responseMimeType: 'application/json', responseSchema: schema, temperature: 0.2, ...extraConfig }
-      })
-    });
-    const data = await res.json();
+    let res;
+    try {
+      res = await postJson(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+        { 'Content-Type': 'application/json', 'x-goog-api-key': KEY },
+        JSON.stringify({
+          contents: [{ parts }],
+          // temperature 를 낮춰서 같은 영상을 다시 돌려도 결과가 덜 흔들리게 한다
+          generationConfig: { responseMimeType: 'application/json', responseSchema: schema, temperature: 0.2, ...extraConfig }
+        })
+      );
+    } catch (err) {
+      // 연결 자체가 끊김 (VPN 재연결 등) — 조금 쉬었다가 다시
+      if (attempt < 5) {
+        await sleep(attempt * 10000);
+        continue;
+      }
+      throw err;
+    }
+    const { data } = res;
     if (!res.ok) {
       const message = data.error?.message || `API 오류 (${res.status})`;
       // 하루 한도가 끝난 거면 기다려도 소용없다 — 바로 멈춘다
@@ -276,7 +314,8 @@ async function main() {
   const args = process.argv.slice(2);
   const force = args.includes('--force');
   const dry = args.includes('--dry');
-  const verify = !args.includes('--no-verify');
+  // .env 에 ANALYZE_NO_VERIFY=1 을 넣어도 --no-verify 와 같다 (이미 돌고 있는 반복 작업 중간에 바꿀 때)
+  const verify = !args.includes('--no-verify') && process.env.ANALYZE_NO_VERIFY !== '1';
   const nearHidden = args.includes('--near-goal-hidden');
   const onlyId = args.find((arg) => !arg.startsWith('--'));
 

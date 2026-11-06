@@ -1327,5 +1327,76 @@
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-11-06",
     "verified": true
+  },
+  "qdjbUjNVxAM": {
+    "highlights": [
+      {
+        "t": 18,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 54,
+        "label": "측면 돌파 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 140,
+        "label": "역습 찬스 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 155,
+        "label": "중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 212,
+        "label": "골문 앞 패스 연결",
+        "type": "play"
+      },
+      {
+        "t": 258,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 304,
+        "label": "골키퍼 정면 슈팅",
+        "type": "save"
+      },
+      {
+        "t": 424,
+        "label": "강력한 중거리 득점",
+        "type": "goal"
+      },
+      {
+        "t": 488,
+        "label": "골키퍼 1대1 선방",
+        "type": "save"
+      },
+      {
+        "t": 563,
+        "label": "골키퍼 정면 선방",
+        "type": "save"
+      },
+      {
+        "t": 602,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 641,
+        "label": "골키퍼 다이빙 선방",
+        "type": "save"
+      },
+      {
+        "t": 693,
+        "label": "골문 앞 슈팅",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.7-flash",
+    "analyzedAt": "2026-11-06"
   }
 }
