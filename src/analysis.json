@@ -1398,5 +1398,321 @@
     ],
     "model": "gemini-3.7-flash",
     "analyzedAt": "2026-11-06"
+  },
+  "6e6CriG2PaA": {
+    "highlights": [
+      {
+        "t": 143,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 258,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 367,
+        "label": "중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 556,
+        "label": "위협적인 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 658,
+        "label": "날카로운 슈팅",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-06"
+  },
+  "CtBwX6pdEsA": {
+    "highlights": [
+      {
+        "t": 61,
+        "label": "측면 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 258,
+        "label": "왼발 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 323,
+        "label": "중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 405,
+        "label": "돌파 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 465,
+        "label": "위협적인 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 532,
+        "label": "왼발 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 549,
+        "label": "골대를 벗어난 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 561,
+        "label": "몸싸움 파울",
+        "type": "foul"
+      },
+      {
+        "t": 600,
+        "label": "강력한 중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 608,
+        "label": "골문 방향 슈팅",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-06"
+  },
+  "DIk5jZSpfsI": {
+    "highlights": [
+      {
+        "t": 42,
+        "label": "골대 앞 근거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 121,
+        "label": "중거리 강력한 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 145,
+        "label": "골키퍼 정면 선방",
+        "type": "save"
+      },
+      {
+        "t": 155,
+        "label": "중앙 침투 후 득점",
+        "type": "goal"
+      },
+      {
+        "t": 250,
+        "label": "위협적인 중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 304,
+        "label": "골키퍼 슈팅 차단",
+        "type": "save"
+      },
+      {
+        "t": 383,
+        "label": "골키퍼 슈팅 캐치",
+        "type": "save"
+      },
+      {
+        "t": 408,
+        "label": "골대 위로 벗어난 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 462,
+        "label": "골키퍼 슈팅 선방",
+        "type": "save"
+      },
+      {
+        "t": 479,
+        "label": "골키퍼 육탄 선방",
+        "type": "save"
+      },
+      {
+        "t": 517,
+        "label": "골키퍼 유효슈팅 선방",
+        "type": "save"
+      },
+      {
+        "t": 559,
+        "label": "몸싸움 파울 선언",
+        "type": "foul"
+      },
+      {
+        "t": 593,
+        "label": "근거리 측면 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 664,
+        "label": "골키퍼 정면 선방",
+        "type": "save"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-06"
+  },
+  "iCwoCb1hvGc": {
+    "highlights": [
+      {
+        "t": 148,
+        "label": "화려한 개인기 탈압박",
+        "type": "play"
+      },
+      {
+        "t": 394,
+        "label": "압박 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 449,
+        "label": "슬라이딩 수비 시도",
+        "type": "other"
+      },
+      {
+        "t": 484,
+        "label": "측면 드리블 돌파",
+        "type": "play"
+      },
+      {
+        "t": 603,
+        "label": "골문 앞 위협적인 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 673,
+        "label": "강력한 중거리 슈팅",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-06"
+  },
+  "HzHqBIgjgUs": {
+    "highlights": [
+      {
+        "t": 23,
+        "label": "골문 앞 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 57,
+        "label": "위협적인 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 96,
+        "label": "문전 슈팅 시도",
+        "type": "shot"
+      },
+      {
+        "t": 261,
+        "label": "역습 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 324,
+        "label": "중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 540,
+        "label": "강력한 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 646,
+        "label": "골대 맞고 나온 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 723,
+        "label": "돌파 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 793,
+        "label": "역습 슈팅 시도",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-06"
+  },
+  "uXczHyQVl6A": {
+    "highlights": [
+      {
+        "t": 29,
+        "label": "강력한 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 46,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 133,
+        "label": "슈팅 시도",
+        "type": "shot"
+      },
+      {
+        "t": 208,
+        "label": "중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 222,
+        "label": "수비 육탄 방어",
+        "type": "save"
+      },
+      {
+        "t": 286,
+        "label": "골대쪽 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 341,
+        "label": "아쉬운 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 385,
+        "label": "위협적인 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 500,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 533,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 573,
+        "label": "중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 625,
+        "label": "골대 근처 슈팅",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-06"
   }
 }

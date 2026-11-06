@@ -146,7 +146,7 @@ const clock = (t) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
 
 /**
  * POST → { ok, status, data }. 내장 fetch 는 응답 머리글을 5분까지만 기다리고 'fetch failed' 로 끊어 버리는데,
- * 긴 영상은 Gemini 가 5분 넘게 생각하기도 해서 기다리는 시간 제한이 없는 https 모듈을 쓴다.
+ * 긴 영상은 Gemini 가 5분 넘게 생각하기도 해서 https 모듈로 직접 보내고 15분까지 기다린다.
  */
 function postJson(url, headers, body) {
   return new Promise((resolve, reject) => {
@@ -165,7 +165,8 @@ function postJson(url, headers, body) {
       });
       res.on('error', reject);
     });
-    req.setTimeout(0);
+    // 5분은 짧지만, 연결이 겉으로만 살아 있고 응답이 안 오는 경우(VPN 재연결 등)도 있어서 15분이면 끊고 다시 시도한다
+    req.setTimeout(15 * 60 * 1000, () => req.destroy(new Error('15분 동안 응답이 없어요')));
     req.on('error', reject);
     req.end(body);
   });
@@ -353,9 +354,11 @@ async function main() {
           console.log(`   ${clock(item.t).padStart(5)}  ${item.type.padEnd(5)}  ${item.label}`);
         }
       } else {
-        analysis[video.id] = result;
-        // 하나 끝날 때마다 저장 — 중간에 멈춰도 앞의 것은 남는다
-        writeFileSync(ANALYSIS, JSON.stringify(analysis, null, 2) + '\n');
+        // 하나 끝날 때마다 저장 — 중간에 멈춰도 앞의 것은 남는다.
+        // 저장 직전에 파일을 다시 읽어서 이 영상만 바꾼다 (여러 개를 동시에 돌려도 서로 덮어쓰지 않게)
+        const latest = JSON.parse(readFileSync(ANALYSIS, 'utf8'));
+        latest[video.id] = result;
+        writeFileSync(ANALYSIS, JSON.stringify(latest, null, 2) + '\n');
         console.log(`하이라이트 ${result.highlights.length}개 · 골 ${goals}개`);
       }
       done += 1;
