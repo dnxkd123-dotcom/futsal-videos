@@ -6,6 +6,9 @@
  *   npm run analyze -- --force   전부 다시
  *   npm run analyze -- 영상ID --dry   저장하지 않고 결과만 출력 (프롬프트 시험용)
  *   --no-verify                  2단계 골 검증을 건너뛴다 (빠르지만 덜 정확)
+ *   --near-goal-hidden           카메라 쪽(가까운) 골대가 화면에 잘 안 잡힌 촬영본용.
+ *                                그쪽 골은 공이 들어가는 순간 대신 '경기가 어떻게 다시 시작되는지'로 판정하고,
+ *                                클립을 더 길게 잘라 재시작 장면까지 보이게 한다. (예: 2026-11-05 경기)
  *
  * 1단계: 영상 전체를 보고 하이라이트 후보를 뽑는다.
  * 2단계: 골 · 슈팅 · 선방 후보마다 앞뒤 20초 구간만 잘라 촘촘하게(초당 3장, 고해상도) 다시 보여주고
@@ -28,6 +31,7 @@ const TYPES = ['goal', 'shot', 'save', 'play', 'foul', 'other'];
 const CHECK_TYPES = ['goal', 'shot', 'save']; // 2단계에서 다시 볼 종류
 const CLIP_BEFORE = 8; // 후보 시각 앞으로 몇 초부터
 const CLIP_AFTER = 12; // 뒤로 몇 초까지 (골이면 직후 환호·재시작까지 보이도록 넉넉히)
+const CLIP_AFTER_NEAR_HIDDEN = 25; // --near-goal-hidden 일 때 — 센터 킥오프까지 보여야 판정할 수 있어서 더 길게
 const CLIP_FPS = 3; // 클립은 초당 3장 — 1단계(초당 1장)보다 촘촘하게
 // 클립을 한 번에 몇 개씩 묶어 보낼지. 무료 요금제는 하루 호출 수가 적어서(모델당 20번) 묶어야 영상 여러 편을 돌릴 수 있다
 const CLIPS_PER_CALL = 10;
@@ -89,6 +93,30 @@ const VERIFY_PROMPT = `위의 클립들은 같은 아마추어 풋살 경기 영
 
 위 증거를 확인할 수 없으면 verdict 를 "unsure" 로 하세요. 추측하지 마세요.
 evidence 는 판단 근거를 한 문장으로, label 은 판정 결과에 맞는 15자 이내 한국어 설명입니다 (예: "왼발 슈팅 골", "골키퍼 정면 선방").`;
+
+// --near-goal-hidden 일 때 1단계 프롬프트 뒤에 붙인다
+const NEAR_HIDDEN_NOTE = `
+
+촬영 조건 (중요):
+   - 카메라가 한쪽 골대 바로 옆 모서리에 있어서, 카메라 쪽(가까운) 골대는 화면 가장자리에 잘리거나 아예 안 보입니다.
+   - 그쪽 골대로 향한 슈팅은 공이 들어가는 순간이 안 보이는 게 정상입니다. 그 직후 경기가 하프라인 가운데(센터)에서 킥오프로 다시 시작되면 goal 로 적으세요.
+   - 그쪽 골대 방향으로 공을 차는 장면은 결과가 안 보여도 빠뜨리지 말고 shot 으로라도 넣어 주세요.
+   - label 에는 "카메라" 같은 촬영 관련 말을 넣지 마세요.`;
+
+// --near-goal-hidden 일 때 2단계 프롬프트 뒤에 붙인다
+const NEAR_HIDDEN_VERIFY_NOTE = `
+
+촬영 조건 (중요) — 카메라 쪽(가까운) 골대:
+카메라가 한쪽 골대 바로 옆 모서리에 있어서, 카메라 쪽 골대는 화면 가장자리에 잘리거나 아예 안 보입니다.
+먼 쪽 골대로 향한 슈팅은 위 기준 그대로 판정하세요.
+카메라 쪽 골대로 향한 슈팅은 공이 골문에 들어가는 순간이 안 보이는 게 정상이므로, 그것 때문에 unsure 로 하지 말고 슈팅 직후 경기가 어떻게 다시 시작되는지로 판정하세요.
+   - 하프라인 가운데(센터 서클)에 공을 놓고 킥오프로 다시 시작한다 → goal
+   - 카메라 쪽 골키퍼가 화면 가장자리에서 공을 들고 나오거나 손으로 던져/굴려 다시 시작한다 → no_goal (잡았으면 save, 아니면 miss)
+   - 슈팅 직후 상대 팀이 곧바로 공을 몰고 반대쪽으로 공격해 나간다 → no_goal
+   - 코너킥이나 킥인으로 다시 시작한다 → no_goal (miss)
+   - 클립이 끝날 때까지 어떻게 다시 시작하는지 안 보인다 → unsure
+evidence 에는 카메라 쪽 골대였는지, 무엇으로 다시 시작했는지를 꼭 적으세요.
+label 은 영상을 보는 사람용이므로 "카메라" 같은 촬영 관련 말은 넣지 마세요 (예: "왼발 슈팅 골").`;
 
 const VERIFY_SCHEMA = {
   type: 'OBJECT',
@@ -152,8 +180,9 @@ function toSeconds(text) {
 }
 
 /** 1단계 — 영상 전체에서 하이라이트 후보 */
-async function findHighlights(id) {
-  const parsed = await callGemini(MODEL, [{ fileData: youtube(id) }, { text: PROMPT }], SCHEMA);
+async function findHighlights(id, nearHidden) {
+  const prompt = nearHidden ? PROMPT + NEAR_HIDDEN_NOTE : PROMPT;
+  const parsed = await callGemini(MODEL, [{ fileData: youtube(id) }, { text: prompt }], SCHEMA);
   return (parsed.highlights ?? [])
     .map((item) => ({
       t: toSeconds(item.time),
@@ -165,15 +194,17 @@ async function findHighlights(id) {
 }
 
 /** 2단계 — 후보 여러 개를 짧게 잘라 한 번에 보내고, 장면마다 골인지 판정. 결과는 items 순서대로 */
-async function verifyShots(id, items) {
+async function verifyShots(id, items, nearHidden) {
+  const after = nearHidden ? CLIP_AFTER_NEAR_HIDDEN : CLIP_AFTER;
+  const prompt = nearHidden ? VERIFY_PROMPT + NEAR_HIDDEN_VERIFY_NOTE : VERIFY_PROMPT;
   const parts = items.flatMap((item, i) => [
     { text: `장면 ${i + 1}` },
     {
       fileData: youtube(id),
-      videoMetadata: { startOffset: `${Math.max(0, item.t - CLIP_BEFORE)}s`, endOffset: `${item.t + CLIP_AFTER}s`, fps: CLIP_FPS }
+      videoMetadata: { startOffset: `${Math.max(0, item.t - CLIP_BEFORE)}s`, endOffset: `${item.t + after}s`, fps: CLIP_FPS }
     }
   ]);
-  const parsed = await callGemini(VERIFY_MODEL, [...parts, { text: VERIFY_PROMPT }], VERIFY_SCHEMA, {
+  const parsed = await callGemini(VERIFY_MODEL, [...parts, { text: prompt }], VERIFY_SCHEMA, {
     mediaResolution: 'MEDIA_RESOLUTION_HIGH'
   });
   const byScene = new Map((parsed.results ?? []).map((result) => [result.scene, result]));
@@ -190,8 +221,8 @@ function applyVerdict(item, check) {
   return { ...item, type, label: String(check.label ?? '').trim() || item.label };
 }
 
-async function analyze(id, { verify, onCheck }) {
-  const found = await findHighlights(id);
+async function analyze(id, { verify, onCheck, nearHidden }) {
+  const found = await findHighlights(id, nearHidden);
   const meta = { model: MODEL, analyzedAt: new Date().toISOString().slice(0, 10) };
   if (!verify) return { highlights: found, ...meta };
 
@@ -200,7 +231,7 @@ async function analyze(id, { verify, onCheck }) {
   for (let i = 0; i < toCheck.length; i += CLIPS_PER_CALL) {
     const batch = toCheck.slice(i, i + CLIPS_PER_CALL);
     try {
-      const results = await verifyShots(id, batch);
+      const results = await verifyShots(id, batch, nearHidden);
       batch.forEach((item, j) => checks.set(item, results[j]));
     } catch (err) {
       if (err.daily) throw err; // 하루 한도 — 이 영상은 저장하지 않고 다음에 다시
@@ -246,6 +277,7 @@ async function main() {
   const force = args.includes('--force');
   const dry = args.includes('--dry');
   const verify = !args.includes('--no-verify');
+  const nearHidden = args.includes('--near-goal-hidden');
   const onlyId = args.find((arg) => !arg.startsWith('--'));
 
   const videos = JSON.parse(readFileSync(VIDEOS, 'utf8'));
@@ -273,7 +305,7 @@ async function main() {
   for (const video of targets) {
     process.stdout.write(`[${done + 1}/${targets.length}] ${video.title} (${video.id}) … `);
     try {
-      const result = await analyze(video.id, { verify, onCheck });
+      const result = await analyze(video.id, { verify, onCheck, nearHidden });
       const goals = result.highlights.filter((item) => item.type === 'goal').length;
       if (dry) {
         // 저장하지 않고 화면에만 보여준다 (프롬프트 시험용)

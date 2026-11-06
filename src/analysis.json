@@ -1265,5 +1265,67 @@
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-10-30",
     "verified": true
+  },
+  "yXb2mXSJq-0": {
+    "highlights": [
+      {
+        "t": 67,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 173,
+        "label": "문전 결정적 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 289,
+        "label": "슈팅 골",
+        "type": "goal"
+      },
+      {
+        "t": 325,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 387,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 411,
+        "label": "골키퍼 정면 슈팅",
+        "type": "save"
+      },
+      {
+        "t": 477,
+        "label": "슈팅 득점",
+        "type": "goal"
+      },
+      {
+        "t": 564,
+        "label": "문전 쇄도 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 590,
+        "label": "슈팅 득점",
+        "type": "goal"
+      },
+      {
+        "t": 613,
+        "label": "인터셉트 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 625,
+        "label": "중거리 슈팅",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-11-06",
+    "verified": true
   }
 }
