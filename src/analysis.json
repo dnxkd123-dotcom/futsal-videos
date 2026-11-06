@@ -1714,5 +1714,66 @@
     ],
     "model": "gemini-3.6-flash",
     "analyzedAt": "2026-11-06"
+  },
+  "xZF48pu8DEU": {
+    "highlights": [
+      {
+        "t": 54,
+        "label": "강력한 슈팅 득점",
+        "type": "goal"
+      },
+      {
+        "t": 121,
+        "label": "돌파 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 194,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 258,
+        "label": "위협적인 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 323,
+        "label": "골문 구석 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 373,
+        "label": "아쉬운 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 491,
+        "label": "반박자 빠른 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 606,
+        "label": "정확한 슛 득점",
+        "type": "goal"
+      },
+      {
+        "t": 677,
+        "label": "근거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 703,
+        "label": "골문 구석 득점",
+        "type": "goal"
+      },
+      {
+        "t": 797,
+        "label": "골키퍼 선방",
+        "type": "save"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-06"
   }
 }
