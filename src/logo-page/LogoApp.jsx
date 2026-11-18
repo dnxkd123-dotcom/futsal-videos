@@ -105,7 +105,7 @@ export default function LogoApp() {
     setOpen({ no, from: ALL });
   };
 
-  // 인기 TOP 20 — 좋아요 많은 순, 같으면 번호 순. 좋아요 0개는 넣지 않는다
+  // 인기 TOP (TOP_SIZE 개) — 좋아요 많은 순, 같으면 번호 순. 좋아요 0개는 넣지 않는다
   const top = useMemo(
     () =>
       allLogos
