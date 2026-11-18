@@ -23,6 +23,20 @@ const STYLES = [
   ['esports-style-futsal-team-emblem', 'e스포츠']
 ];
 const OTHER = { key: 'other', label: '기타' };
+// Recraft 에서 직접 받아 넣은 WOODANG TT 시안 (파일 이름 앞부분이 제각각) — 기존 번호가 밀리지 않게 맨 뒤에 둔다
+const PICKED = { key: 'woodang-tt-picked', label: 'WOODANG TT · 추가 시안' };
+
+// 'minimal-circular-badge-logo-for-futsal-team' → '미니멀 원형 배지 로고'
+const WORDS = {
+  bold: '굵은', monogram: '모노그램', logo: '로고', classic: '클래식', crest: '크레스트', badge: '배지', emblem: '엠블럼',
+  minimal: '미니멀', minimalist: '미니멀', circular: '원형', round: '원형', modern: '모던', hexagon: '육각', simple: '심플',
+  sleek: '매끈한', sporty: '스포티', wordmark: '워드마크', shield: '방패', vintage: '빈티지', retro: '레트로', cute: '귀여운'
+};
+const SKIP = new Set(['for', 'futsal', 'team', 'the', 'a', 'of']);
+function koreanStyle(prefix) {
+  const words = prefix.split('-').filter((word) => word && !SKIP.has(word));
+  return [...new Set(words.map((word) => WORDS[word] ?? word))].join(' ') || '시안';
+}
 
 // WOODANG TT 시안(woodang-tt-<분류>--<콘셉트>-<번호>)의 콘셉트 설명
 const CONCEPTS = {
@@ -71,6 +85,8 @@ function parse(path) {
   const prefix = split === -1 ? name : name.slice(0, split);
   const rest = split === -1 ? '' : name.slice(split + 2);
   const style = STYLES.find(([key]) => key === prefix);
+  // 이름 뒷부분이 '--woodang-tt…' 인데 50자에서 잘려 '--wooda' 처럼 끝나는 것도 있다
+  if (!style && /^wood/i.test(rest)) return { name, styleKey: PICKED.key, caption: koreanStyle(prefix) };
   return { name, styleKey: style ? prefix : OTHER.key, caption: describe(prefix, rest) };
 }
 
@@ -79,9 +95,22 @@ const parsed = Object.entries(files)
   .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
 
 /** 스타일 묶음 — 정해 둔 순서대로, 빈 묶음은 빼고 */
-export const groups = [...STYLES.map(([key, label]) => ({ key, label })), OTHER]
+export const groups = [...STYLES.map(([key, label]) => ({ key, label })), PICKED, OTHER]
   .map((style) => ({ ...style, items: parsed.filter((logo) => logo.styleKey === style.key) }))
   .filter((group) => group.items.length);
+
+// 추가 시안은 설명이 겹치면 뒤에 1, 2… 를 붙여 구분한다 (예: 클래식 크레스트 1 · 2)
+for (const group of groups.filter((g) => g.key === PICKED.key)) {
+  const total = {};
+  for (const logo of group.items) total[logo.caption] = (total[logo.caption] ?? 0) + 1;
+  const seen = {};
+  for (const logo of group.items) {
+    if (total[logo.caption] > 1) {
+      seen[logo.caption] = (seen[logo.caption] ?? 0) + 1;
+      logo.caption = `${logo.caption} ${seen[logo.caption]}`;
+    }
+  }
+}
 
 // 번호는 화면 순서대로 1번부터 — "37번 좋아요" 처럼 부르기 좋게
 let n = 0;
