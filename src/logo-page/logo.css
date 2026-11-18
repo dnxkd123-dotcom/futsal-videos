@@ -52,16 +52,17 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 .lg-grid--m { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 .lg-grid--s { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
 
-.lg-card { position: relative; display: flex; flex-direction: column; width: 100%; padding: 0; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); overflow: hidden; text-align: left; transition: border-color 0.15s, transform 0.15s; }
-.lg-card:hover { border-color: var(--control); transform: translateY(-2px); }
+/* 카드 칸 — 그림 버튼과 좋아요 버튼을 함께 감싼다 */
+.lg-item { position: relative; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); overflow: hidden; transition: border-color 0.15s, transform 0.15s; }
+.lg-item:hover { border-color: var(--control); transform: translateY(-2px); }
+.lg-card { position: relative; flex: 1; display: flex; flex-direction: column; width: 100%; padding: 0; text-align: left; }
 .lg-card img { display: block; width: 100%; height: auto; aspect-ratio: 1; background: var(--raised); }
 /* 번호 — 그림 위 왼쪽 위 모서리에 또렷하게 */
 .lg-card__no { position: absolute; top: 8px; left: 8px; min-width: 32px; height: 28px; padding: 0 8px; border-radius: 999px; background: rgba(19, 20, 22, 0.82); color: #fff; font-family: var(--num); font-size: 18px; font-weight: 600; line-height: 28px; text-align: center; }
 .lg-grid--s .lg-card__no { top: 4px; left: 4px; min-width: 26px; height: 22px; padding: 0 6px; font-size: 15px; line-height: 22px; }
 .lg-card__caption { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; padding: 8px 10px 10px; font-size: 12px; line-height: 1.4; color: var(--muted); min-height: calc(12px * 1.4 * 2 + 18px); }
 
-/* 좋아요 — 카드 오른쪽 위 하트 알약 */
-.lg-grid > li { position: relative; }
+/* 좋아요 — 마우스 화면에서는 카드 오른쪽 위 하트 알약 */
 .lg-like { display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 10px 0 8px; border: 1px solid var(--border); border-radius: 999px; background: rgba(255, 255, 255, 0.94); color: var(--muted); font-family: var(--num); font-size: 16px; font-weight: 600; line-height: 1; transition: color 0.15s, background 0.15s, border-color 0.15s, transform 0.1s; }
 .lg-like:hover:not(:disabled) { color: #e0245e; }
 .lg-like:active:not(:disabled) { transform: scale(0.92); }
@@ -70,6 +71,11 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 .lg-like--card { position: absolute; top: 8px; right: 8px; z-index: 1; }
 .lg-grid--s .lg-like--card { top: 4px; right: 4px; height: 24px; padding: 0 7px 0 5px; font-size: 14px; }
 .lg-grid--s .lg-like svg { width: 13px; height: 13px; }
+.lg-like__text { font-family: var(--font); font-size: 15px; font-weight: 600; }
+/* 누르는 순간 하트가 통 튄다 */
+.lg-like--on svg { animation: lg-pop 0.35s ease-out; }
+@keyframes lg-pop { 0% { transform: scale(1); } 40% { transform: scale(1.45); } 100% { transform: scale(1); } }
+.lg-like--big, .lg-viewer__hint { display: none; }
 
 /* 인기 TOP 20 */
 .lg-chip--top { border-color: #f7c6d4; color: #c81d52; }
@@ -99,9 +105,41 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 .lg-viewer__nav:hover { background: rgba(255, 255, 255, 0.12); }
 .lg-viewer__nav--prev { left: 8px; }
 .lg-viewer__nav--next { right: 8px; }
-.lg-viewer__foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px 16px; }
-.lg-viewer__foot p { min-width: 0; font-size: 13px; color: rgba(255, 255, 255, 0.7); }
-.lg-viewer__foot a { flex: none; color: #fff; font-size: 13px; font-weight: 500; text-underline-offset: 3px; }
+.lg-viewer__stage { touch-action: manipulation; } /* 두 번 탭해도 화면이 확대되지 않게 */
+.lg-viewer__stage img { cursor: pointer; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.lg-viewer__foot { display: flex; flex-direction: column; gap: 10px; padding: 12px 16px calc(16px + env(safe-area-inset-bottom)); }
+.lg-viewer__meta { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.lg-viewer__meta p { min-width: 0; font-size: 13px; color: rgba(255, 255, 255, 0.7); }
+.lg-viewer__meta a { flex: none; color: #fff; font-size: 13px; font-weight: 500; text-underline-offset: 3px; }
+.lg-viewer__hint { margin-top: -2px; font-size: 12px; text-align: center; color: rgba(255, 255, 255, 0.5); }
+
+/* 두 번 탭 하트 — 그림 한가운데서 커졌다 사라진다 */
+.lg-burst { position: absolute; left: 50%; top: 50%; color: #ff3b6b; pointer-events: none; filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.35)); animation: lg-burst 0.8s ease-out forwards; }
+.lg-burst svg { display: block; width: 120px; height: 120px; }
+@keyframes lg-burst {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+  20% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+  45% { transform: translate(-50%, -50%) scale(0.95); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.25); opacity: 0; }
+}
+
+/* 터치 화면(폰 · 태블릿) — 좋아요를 손가락으로 누르기 쉽게 */
+@media (hover: none), (max-width: 640px) {
+  .lg-item:hover { transform: none; }
+  /* 카드: 그림 위 작은 알약 대신 카드 아래 넓은 줄 (높이 44px) */
+  .lg-like--card { position: static; justify-content: center; gap: 6px; width: 100%; height: 44px; padding: 0; border: 0; border-top: 1px solid var(--border); border-radius: 0; background: var(--surface); font-size: 18px; }
+  .lg-like--card svg { width: 19px; height: 19px; }
+  .lg-like--card.lg-like--on { background: #fff0f4; }
+  .lg-grid--s .lg-like--card { height: 38px; padding: 0; font-size: 15px; }
+  .lg-grid--s .lg-like--card svg { width: 15px; height: 15px; }
+  .lg-card__caption { min-height: 0; padding-bottom: 8px; }
+  /* 크게 보기: 위 구석 버튼 대신 엄지가 닿는 아래쪽 큰 버튼 */
+  .lg-viewer__bar .lg-like--viewer { display: none; }
+  .lg-like--big { display: flex; justify-content: center; gap: 8px; width: 100%; height: 54px; border: 0; border-radius: 14px; background: rgba(255, 255, 255, 0.14); color: #fff; font-size: 19px; }
+  .lg-like--big svg { width: 22px; height: 22px; }
+  .lg-like--big.lg-like--on { background: #e0245e; color: #fff; }
+  .lg-viewer__hint { display: block; }
+}
 
 /* 폰 */
 @media (max-width: 640px) {

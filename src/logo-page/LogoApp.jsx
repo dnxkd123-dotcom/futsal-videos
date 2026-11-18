@@ -36,6 +36,7 @@ function useLikes() {
     async (name) => {
       if (pending.has(name)) return;
       const on = !state.mine.has(name);
+      if (on) navigator.vibrate?.(12); // 안드로이드에서 짧게 톡 (아이폰은 지원 안 함)
       setPending((prev) => new Set(prev).add(name));
       setError('');
       try {
@@ -83,8 +84,9 @@ export default function LogoApp() {
     window.scrollTo({ top: 0 });
   };
 
+  // 카드 = 그림 버튼 + 좋아요 버튼. 마우스 화면에서는 좋아요가 그림 위 구석에, 터치 화면에서는 카드 아래 넓은 줄로 붙는다
   const card = (logo, from, caption) => (
-    <li key={`${from}-${logo.no}`}>
+    <li key={`${from}-${logo.no}`} className="lg-item">
       <button type="button" className="lg-card" onClick={() => setOpen({ no: logo.no, from })}>
         <img src={logo.url} alt={`${logo.no}번 로고`} width="1024" height="1024" loading="lazy" decoding="async" />
         <span className="lg-card__no">{logo.no}</span>
@@ -187,7 +189,7 @@ function Heart({ filled }) {
   );
 }
 
-function LikeButton({ logo, likes, className = '' }) {
+function LikeButton({ logo, likes, className = '', label = false }) {
   const liked = likes.mine.has(logo.name);
   const count = likes.counts[logo.name] ?? 0;
   if (likes.failed) return null;
@@ -201,7 +203,8 @@ function LikeButton({ logo, likes, className = '' }) {
       onClick={() => likes.toggle(logo.name)}
     >
       <Heart filled={liked} />
-      <span>{count}</span>
+      {label && <span className="lg-like__text">{liked ? '좋아요 했어요' : '좋아요'}</span>}
+      <span className="lg-like__count">{count}</span>
     </button>
   );
 }
@@ -210,6 +213,21 @@ function LikeButton({ logo, likes, className = '' }) {
 function Viewer({ logo, position, count, likes, onMove, onClose }) {
   const closeRef = useRef(null);
   const touchX = useRef(null);
+  const lastTap = useRef(0);
+  const [burst, setBurst] = useState(0); // 두 번 탭 하트 애니메이션 (바뀔 때마다 새로 재생)
+
+  // 그림을 두 번 탭(더블클릭)하면 좋아요 — 인스타그램처럼 누르기만 하고 취소는 안 한다
+  const onImageTap = () => {
+    const now = Date.now();
+    if (now - lastTap.current < 320) {
+      lastTap.current = 0;
+      if (!likes.failed && likes.ready && !likes.mine.has(logo.name)) likes.toggle(logo.name);
+      setBurst((n) => n + 1);
+    } else {
+      lastTap.current = now;
+    }
+  };
+  useEffect(() => setBurst(0), [logo.no]);
 
   const onKey = useCallback(
     (event) => {
@@ -272,17 +290,27 @@ function Viewer({ logo, position, count, likes, onMove, onClose }) {
         <button type="button" className="lg-viewer__nav lg-viewer__nav--prev" aria-label="이전 로고" onClick={() => onMove(-1)}>
           ‹
         </button>
-        <img key={logo.no} src={logo.url} alt={`${logo.no}번 로고`} width="1024" height="1024" />
+        <img key={logo.no} src={logo.url} alt={`${logo.no}번 로고`} width="1024" height="1024" onClick={onImageTap} />
+        {burst > 0 && (
+          <span key={burst} className="lg-burst" aria-hidden="true">
+            <Heart filled />
+          </span>
+        )}
         <button type="button" className="lg-viewer__nav lg-viewer__nav--next" aria-label="다음 로고" onClick={() => onMove(1)}>
           ›
         </button>
       </div>
 
       <div className="lg-viewer__foot">
-        <p>{logo.caption}</p>
-        <a href={logo.url} target="_blank" rel="noreferrer">
-          원본 열기
-        </a>
+        <div className="lg-viewer__meta">
+          <p>{logo.caption}</p>
+          <a href={logo.url} target="_blank" rel="noreferrer">
+            원본 열기
+          </a>
+        </div>
+        {/* 터치 화면 전용 — 엄지가 닿는 아래쪽 큰 좋아요 */}
+        <LikeButton logo={logo} likes={likes} className="lg-like--big" label />
+        <p className="lg-viewer__hint">그림을 두 번 탭해도 좋아요 · 옆으로 밀면 다음 시안</p>
       </div>
     </div>
   );
