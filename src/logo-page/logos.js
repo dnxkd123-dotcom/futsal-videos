@@ -31,7 +31,7 @@ const CONCEPTS = {
   'cloud-bounce': '구름 위 공', 'pots-pans': '냄비·프라이팬 우당탕', 'toy-drum': '장난감 북', 'smiley-ball': '웃는 공',
   'cherry-balls': '체리 공', 'planet-ball': '행성 공', 'dust-roll': '먼지 날리며 구르는 공', 'jelly-splash': '젤리 풍덩',
   'ball-rocket': '공 로켓', 'heart-crest': '하트 크레스트', 'rounded-shield': '둥근 방패', 'tumbling-ball': '데굴데굴 공 캐릭터',
-  'ball-mascot-kick': '공 마스코트 · 날아차기', 'ball-mascot-flex': '공 마스코트 · 근육 자랑',
+  'ball-mascot-kick': '공 마스코트 · 날아차기', 'ball-mascot-flex': '공 마스코트 · 근육 자랑', 'ball-mascot-wink': '공 마스코트 · 윙크',
   'cracked-shield': '금 간 방패', 'cracked-shield-v1': '금 간 방패 (초안)', 'flame-ball': '불타는 공', 'bolt-w': '번개 W', meteor: '운석 공',
   monogram: 'W·TT 모노그램', 'crown-rays': '왕관과 빛', 'winged-boots': '날개 축구화', shockwave: '충격파', hammer: '망치',
   cymbals: '심벌즈', 'bomb-ball': '폭탄 공', 'net-rip': '골망 찢기', laurel: '월계관', 'speed-swoosh': '스피드 라인',
