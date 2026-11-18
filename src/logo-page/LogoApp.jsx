@@ -8,7 +8,7 @@ const SIZES = [
   { id: 's', label: '작게' }
 ];
 const TOP = 'top';
-const TOP_SIZE = 20;
+const TOP_SIZE = 10;
 const allLogos = groups.flatMap((group) => group.items);
 const byNo = new Map(allLogos.map((logo) => [logo.no, logo]));
 const ALL = 'all';
