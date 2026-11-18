@@ -25,7 +25,16 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 /* 머리 */
 .lg-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
 .lg-head h1 { font-size: 26px; font-weight: 700; line-height: 1.25; letter-spacing: -0.025em; }
-.lg-head .lg-muted { margin-top: 4px; }
+.lg-head .lg-muted { margin-top: 4px; word-break: keep-all; } /* 한글 단어 중간에서 줄이 바뀌지 않게 */
+/* 번호로 찾기 + 크기 */
+.lg-tools { flex: none; display: flex; align-items: center; gap: 10px; }
+.lg-find { display: flex; gap: 4px; }
+.lg-find input { width: 120px; height: 34px; padding: 0 12px; border: 1px solid var(--control); border-radius: 8px; background: var(--surface); font: inherit; font-size: 14px; color: var(--text); }
+.lg-find input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.lg-find input[aria-invalid='true'] { border-color: #c4242a; }
+.lg-find button { height: 34px; padding: 0 14px; border-radius: 8px; background: var(--text); color: #fff; font-size: 13px; font-weight: 600; }
+.lg-find button:disabled { opacity: 0.35; cursor: default; }
+.lg-find-error { margin: -8px 0 12px; text-align: right; font-size: 13px; color: #c4242a; }
 .lg-seg { flex: none; display: inline-flex; gap: 2px; padding: 2px; border-radius: 8px; background: var(--active); }
 .lg-seg button { height: 30px; padding: 0 12px; border: 1px solid transparent; border-radius: 6px; font-size: 13px; color: var(--muted); }
 .lg-seg button:hover { color: var(--text); }
@@ -145,7 +154,11 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 @media (max-width: 640px) {
   .lg { padding: 16px 16px 64px; }
   .lg-head { flex-direction: column; align-items: stretch; }
-  .lg-seg { align-self: flex-start; }
+  .lg-tools { justify-content: space-between; }
+  .lg-find { flex: 1; min-width: 0; }
+  .lg-find input { flex: 1; min-width: 0; width: auto; height: 40px; font-size: 16px; } /* 16px 미만이면 아이폰이 입력할 때 화면을 확대한다 */
+  .lg-find button { height: 40px; }
+  .lg-find-error { margin-top: -8px; text-align: left; }
   .lg-filters { margin: 0 -16px 8px; padding: 10px 16px; }
   .lg-grid--l { grid-template-columns: 1fr; }
   .lg-grid--m { grid-template-columns: repeat(2, 1fr); gap: 8px; }

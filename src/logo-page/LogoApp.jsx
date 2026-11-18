@@ -10,6 +10,14 @@ const SIZES = [
 const TOP = 'top';
 const TOP_SIZE = 20;
 const allLogos = groups.flatMap((group) => group.items);
+const byNo = new Map(allLogos.map((logo) => [logo.no, logo]));
+const ALL = 'all';
+
+/** 주소 끝 #37 → 37번 (없거나 잘못된 번호면 null) — 단톡방에 "…/logo/#37" 을 보내면 그 시안이 바로 열린다 */
+function noFromHash() {
+  const no = Number(decodeURIComponent(window.location.hash.slice(1)));
+  return byNo.has(no) ? no : null;
+}
 
 /** 좋아요 실시간 구독 + 누르기/취소. 누르는 중인 로고는 pending 에 넣어 두 번 눌리지 않게 한다. */
 function useLikes() {
@@ -60,8 +68,42 @@ function useLikes() {
 export default function LogoApp() {
   const [filter, setFilter] = useState('all'); // 'all' · 'top' · 스타일 key
   const [size, setSize] = useState('m');
-  const [open, setOpen] = useState(null); // { no, from: 'top' | 'grid' }
+  // 크게 보는 시안 { no, from: 'top' | 'grid' | 'all' } — 주소에 #번호가 있으면 그걸 열고 시작
+  const [open, setOpen] = useState(() => {
+    const no = noFromHash();
+    return no ? { no, from: ALL } : null;
+  });
   const likes = useLikes();
+
+  // 크게 보는 동안 주소를 #번호로 바꿔 둔다 (그대로 복사해 보내면 같은 시안이 열린다)
+  useEffect(() => {
+    const url = open ? `#${open.no}` : window.location.pathname + window.location.search;
+    window.history.replaceState(null, '', url);
+  }, [open?.no]);
+  useEffect(() => {
+    const onHash = () => {
+      const no = noFromHash();
+      if (no) setOpen({ no, from: ALL });
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
+  // 번호로 찾기
+  const [query, setQuery] = useState('');
+  const [findError, setFindError] = useState('');
+  const find = (event) => {
+    event.preventDefault();
+    const no = Number(query.trim());
+    if (!byNo.has(no)) {
+      setFindError(`1~${total} 사이 번호를 넣어 주세요`);
+      return;
+    }
+    setFindError('');
+    setQuery('');
+    event.currentTarget.querySelector('input')?.blur(); // 폰 키보드 내리기
+    setOpen({ no, from: ALL });
+  };
 
   // 인기 TOP 20 — 좋아요 많은 순, 같으면 번호 순. 좋아요 0개는 넣지 않는다
   const top = useMemo(
@@ -75,8 +117,11 @@ export default function LogoApp() {
   const showTop = filter === 'all' || filter === TOP;
   const shown = useMemo(() => (filter === 'all' ? groups : groups.filter((group) => group.key === filter)), [filter]);
 
-  // 크게 보기에서 ← → 로 넘기는 순서 — 인기 섹션에서 열면 인기 순서, 아니면 화면의 묶음 순서
-  const list = useMemo(() => (open?.from === TOP ? top : shown.flatMap((group) => group.items)), [open?.from, top, shown]);
+  // 크게 보기에서 ← → 로 넘기는 순서 — 인기 섹션에서 열면 인기 순서, 번호로 찾았으면 전체 번호 순서, 아니면 화면의 묶음 순서
+  const list = useMemo(
+    () => (open?.from === TOP ? top : open?.from === ALL ? allLogos : shown.flatMap((group) => group.items)),
+    [open?.from, top, shown]
+  );
   const index = open ? list.findIndex((logo) => logo.no === open.no) : -1;
 
   const pick = (key) => {
@@ -103,14 +148,41 @@ export default function LogoApp() {
           <h1>로고 후보</h1>
           <p className="lg-muted">{total}개 · 마음에 드는 시안에 ♥를 눌러 주세요 · 누르면 크게 보여요</p>
         </div>
-        <div className="lg-seg" role="group" aria-label="크기">
-          {SIZES.map((item) => (
-            <button key={item.id} type="button" aria-pressed={size === item.id} onClick={() => setSize(item.id)}>
-              {item.label}
+        <div className="lg-tools">
+          <form className="lg-find" role="search" onSubmit={find}>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              enterKeyHint="go"
+              placeholder="번호로 찾기"
+              aria-label="시안 번호로 찾기"
+              aria-invalid={Boolean(findError)}
+              aria-describedby={findError ? 'lg-find-error' : undefined}
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value.replace(/\D/g, ''));
+                setFindError('');
+              }}
+            />
+            <button type="submit" disabled={!query}>
+              보기
             </button>
-          ))}
+          </form>
+          <div className="lg-seg" role="group" aria-label="크기">
+            {SIZES.map((item) => (
+              <button key={item.id} type="button" aria-pressed={size === item.id} onClick={() => setSize(item.id)}>
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
       </header>
+      {findError && (
+        <p id="lg-find-error" className="lg-find-error" role="alert">
+          {findError}
+        </p>
+      )}
 
       <nav className="lg-filters" aria-label="스타일">
         <button type="button" className="lg-chip" aria-pressed={filter === 'all'} onClick={() => pick('all')}>
