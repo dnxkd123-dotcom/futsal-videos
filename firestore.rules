@@ -50,6 +50,20 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // 로고 후보 좋아요 (/logo/) — 한 사람(익명 uid)이 로고 하나에 문서 하나. 문서 ID 가 "uid__로고이름" 이라
+    // 같은 로고에 두 번 못 누른다. 개수 집계를 위해 읽기는 공개, 지우기(취소)는 누른 사람만.
+    match /logoLikes/{likeId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['logo', 'uid'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.logo is string
+        && request.resource.data.logo.size() >= 1 && request.resource.data.logo.size() <= 150
+        && likeId == request.auth.uid + '__' + request.resource.data.logo;
+      allow update: if false;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
     // 비공개 기록(IP·기기 정보) — 쓰기만 가능하고 아무도 읽을 수 없다. 관리자는 콘솔에서 확인.
     match /commentMeta/{commentId} {
       allow create: if request.auth != null
