@@ -2109,5 +2109,176 @@
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-11-15",
     "verified": true
+  },
+  "mKXbYFsOF_A": {
+    "highlights": [
+      {
+        "t": 88,
+        "label": "골문 벗어난 슛",
+        "type": "shot"
+      },
+      {
+        "t": 134,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 154,
+        "label": "가까운 쪽 득점",
+        "type": "goal"
+      },
+      {
+        "t": 219,
+        "label": "골문 위로 벗어남",
+        "type": "shot"
+      },
+      {
+        "t": 261,
+        "label": "먼 쪽 골대 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 284,
+        "label": "수비 태클 차단",
+        "type": "shot"
+      },
+      {
+        "t": 410,
+        "label": "골문 앞 아쉬운 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 494,
+        "label": "골문 벗어난 슛",
+        "type": "shot"
+      },
+      {
+        "t": 524,
+        "label": "수비 태클 차단",
+        "type": "shot"
+      },
+      {
+        "t": 571,
+        "label": "먼 쪽 골대 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 623,
+        "label": "왼발 슈팅 옆그물",
+        "type": "shot"
+      },
+      {
+        "t": 683,
+        "label": "슈팅 크로스바 위",
+        "type": "shot"
+      },
+      {
+        "t": 701,
+        "label": "수비 차단 무산",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-11-19",
+    "verified": true
+  },
+  "GY2nfBZa_oI": {
+    "highlights": [
+      {
+        "t": 230,
+        "label": "화려한 턴과 연계",
+        "type": "play"
+      },
+      {
+        "t": 334,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 352,
+        "label": "골문 앞 위협적 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 427,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 476,
+        "label": "측면 기습 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 552,
+        "label": "위협적인 유효 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 579,
+        "label": "중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 689,
+        "label": "슈팅 골문 옆으로 벗어남",
+        "type": "shot"
+      },
+      {
+        "t": 708,
+        "label": "역습 후 마무리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 738,
+        "label": "골키퍼 결정적 선방",
+        "type": "save"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-11-19",
+    "verified": true
+  },
+  "XuNpvnt_qQU": {
+    "highlights": [
+      {
+        "t": 139,
+        "label": "골키퍼 정면 선방",
+        "type": "save"
+      },
+      {
+        "t": 327,
+        "label": "골문 벗어난 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 435,
+        "label": "골문 벗어난 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 562,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 611,
+        "label": "골문 벗어난 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 671,
+        "label": "골키퍼 다이빙 선방",
+        "type": "save"
+      },
+      {
+        "t": 729,
+        "label": "수비수 육탄 방어",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-11-19",
+    "verified": true
   }
 }
