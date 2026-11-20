@@ -25,6 +25,10 @@
  *   ③ 확인된 골을 하이라이트에 더한다 (같은 순간의 슈팅 · 선방은 골로 바꾼다).
  *   영상 하나에 호출 2~4번. 한 번에 모든 걸 찾게 하면 골을 많이 놓쳐서 (2026-11-19 경기) 만든 단계.
  *
+ * 골 다시 확인 (다른 모델로 더한 골을 검산):
+ *   GEMINI_MODEL=gemini-3.8-flash npm run analyze -- --recheck-goals --date=2026-11-19
+ *   골마다 앞뒤 구간을 2단계 기준으로 다시 판정 — 분명히 골이 아닌 것만 슈팅·선방으로 되돌린다.
+ *
  * 유튜브 링크를 구글 Gemini API 에 그대로 넘긴다 (공개 영상만 가능, 내려받지 않음).
  * 키는 .env 의 GEMINI_API_KEY — 사이트 코드에는 들어가지 않는다.
  */
@@ -476,6 +480,54 @@ async function main() {
 
   const videos = JSON.parse(readFileSync(VIDEOS, 'utf8'));
   const analysis = JSON.parse(readFileSync(ANALYSIS, 'utf8'));
+
+  // 골 다시 확인 — 그날(또는 그 영상) 골을 전부 모아 엄격한 2단계 기준으로 다시 판정한다.
+  // 다른 모델로 찾은 골을 더 좋은 모델로 검산할 때 쓴다. 영상이 달라도 클립 10개씩 한 번에 보낸다.
+  // 골이 아니라고 분명히 나온 것만 슈팅·선방으로 되돌리고, 애매하면 골로 둔다.
+  if (args.includes('--recheck-goals')) {
+    const targets = videos.filter((video) => (onlyId ? video.id === onlyId : video.date === date) && analysis[video.id]);
+    const goals = targets.flatMap((video) =>
+      analysis[video.id].highlights.filter((item) => item.type === 'goal').map((item) => ({ video, item }))
+    );
+    console.log(`골 ${goals.length}개 다시 확인 (${VERIFY_MODEL})`);
+    const changes = new Map(); // "영상ID:t" → 바뀐 하이라이트
+    for (let i = 0; i < goals.length; i += CLIPS_PER_CALL) {
+      const batch = goals.slice(i, i + CLIPS_PER_CALL);
+      const parts = batch.flatMap(({ video, item }, j) => [
+        { text: `장면 ${j + 1}` },
+        { fileData: youtube(video.id), videoMetadata: { startOffset: `${Math.max(0, item.t - CLIP_BEFORE)}s`, endOffset: `${item.t + 25}s`, fps: CLIP_FPS } }
+      ]);
+      let parsed;
+      try {
+        parsed = await callGemini(VERIFY_MODEL, [...parts, { text: VERIFY_PROMPT }], VERIFY_SCHEMA, { mediaResolution: 'MEDIA_RESOLUTION_HIGH' });
+      } catch (err) {
+        console.log(`   실패: ${err.message}`);
+        if (err.daily) break;
+        continue;
+      }
+      const byScene = new Map((parsed.results ?? []).map((r) => [r.scene, r]));
+      batch.forEach(({ video, item }, j) => {
+        const r = byScene.get(j + 1);
+        const keep = !r || r.verdict !== 'no_goal';
+        console.log(`   ${video.title} ${clock(item.t).padStart(5)} ${item.label} → ${keep ? (r?.verdict === 'goal' ? '골 맞음' : '애매 (골로 둠)') : `골 아님 (${r.outcome})`} — ${r?.evidence ?? '응답 없음'}`);
+        if (!keep) {
+          const type = r.outcome === 'save' ? 'save' : 'shot';
+          changes.set(`${video.id}:${item.t}`, r.outcome === 'none' ? null : { ...item, type, label: String(r.label ?? '').trim() || item.label });
+        }
+      });
+    }
+    if (!dry && changes.size) {
+      const latest = JSON.parse(readFileSync(ANALYSIS, 'utf8'));
+      for (const video of targets) {
+        latest[video.id].highlights = latest[video.id].highlights
+          .map((item) => (changes.has(`${video.id}:${item.t}`) && item.type === 'goal' ? changes.get(`${video.id}:${item.t}`) : item))
+          .filter(Boolean);
+      }
+      writeFileSync(ANALYSIS, JSON.stringify(latest, null, 2) + '\n');
+    }
+    console.log(`끝 — ${changes.size}개를 골에서 뺐어요.${dry ? ' (저장 안 함)' : ''}`);
+    return;
+  }
 
   if (args.includes('--goal-hunt')) {
     const targets = videos.filter((video) => (onlyId ? video.id === onlyId : video.date === date) && analysis[video.id]);

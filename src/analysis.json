@@ -2114,8 +2114,8 @@
     "highlights": [
       {
         "t": 88,
-        "label": "가까운 쪽 골대 골",
-        "type": "goal"
+        "label": "왼발 슈팅 빗나감",
+        "type": "shot"
       },
       {
         "t": 134,
@@ -2134,13 +2134,13 @@
       },
       {
         "t": 261,
-        "label": "먼 쪽 골대 골",
-        "type": "goal"
+        "label": "슈팅 골문 벗어남",
+        "type": "shot"
       },
       {
         "t": 284,
-        "label": "가까운 쪽 골대 골",
-        "type": "goal"
+        "label": "골키퍼 선방",
+        "type": "save"
       },
       {
         "t": 410,
@@ -2198,8 +2198,8 @@
       },
       {
         "t": 301,
-        "type": "goal",
-        "label": "근거리 골대 오른발 골"
+        "type": "shot",
+        "label": "슈팅 골문 벗어남"
       },
       {
         "t": 334,
@@ -2223,8 +2223,8 @@
       },
       {
         "t": 552,
-        "label": "가까운 골대 오른발 골",
-        "type": "goal"
+        "label": "슈팅 빗나감",
+        "type": "shot"
       },
       {
         "t": 579,
@@ -2248,8 +2248,8 @@
       },
       {
         "t": 780,
-        "type": "goal",
-        "label": "먼 쪽 골대 슈팅 골"
+        "type": "shot",
+        "label": "슈팅 높게 뜸"
       }
     ],
     "model": "gemini-3.8-flash",
@@ -2271,9 +2271,19 @@
         "type": "save"
       },
       {
+        "t": 271,
+        "type": "shot",
+        "label": "슈팅 골문 빗나감"
+      },
+      {
         "t": 327,
         "label": "골문 벗어난 슈팅",
         "type": "shot"
+      },
+      {
+        "t": 343,
+        "type": "goal",
+        "label": "먼 쪽 골대 득점"
       },
       {
         "t": 435,
@@ -2305,19 +2315,19 @@
     "analyzedAt": "2026-11-19",
     "verified": true,
     "goalHunt": {
-      "model": "gemini-3.8-flash",
+      "model": "gemini-3.6-flash",
       "at": "2026-11-20",
-      "cues": 4,
-      "checked": 3,
-      "added": 0
+      "cues": 10,
+      "checked": 9,
+      "added": 2
     }
   },
   "N5dmvKsuvLs": {
     "highlights": [
       {
         "t": 63,
-        "type": "goal",
-        "label": "먼 쪽 골대 오른쪽 골"
+        "type": "shot",
+        "label": "골문 빗나간 슈팅"
       },
       {
         "t": 135,
@@ -2326,8 +2336,8 @@
       },
       {
         "t": 282,
-        "label": "오른발 슈팅 골",
-        "type": "goal"
+        "label": "오른쪽 빗나간 슈팅",
+        "type": "shot"
       },
       {
         "t": 352,
@@ -2365,8 +2375,8 @@
     "highlights": [
       {
         "t": 98,
-        "label": "골대 벗어난 슈팅",
-        "type": "shot"
+        "label": "가까운 쪽 골대 오른발 골",
+        "type": "goal"
       },
       {
         "t": 168,
@@ -2394,6 +2404,11 @@
         "type": "shot"
       },
       {
+        "t": 610,
+        "type": "save",
+        "label": "골키퍼 정면 선방"
+      },
+      {
         "t": 632,
         "label": "측면 돌파 후 슈팅 선방",
         "type": "save"
@@ -2408,11 +2423,11 @@
     "analyzedAt": "2026-11-20",
     "verified": true,
     "goalHunt": {
-      "model": "gemini-3.8-flash",
+      "model": "gemini-3.6-flash",
       "at": "2026-11-20",
-      "cues": 10,
-      "checked": 5,
-      "added": 0
+      "cues": 12,
+      "checked": 8,
+      "added": 2
     }
   },
   "umf98JNME5o": {
@@ -2434,18 +2449,18 @@
       },
       {
         "t": 182,
-        "type": "goal",
-        "label": "왼쪽 골대 롱슛 골"
+        "type": "shot",
+        "label": "골문 벗어난 슈팅"
       },
       {
         "t": 337,
-        "type": "goal",
-        "label": "먼 쪽 골대 골"
+        "type": "shot",
+        "label": "골문 벗어난 슈팅"
       },
       {
         "t": 480,
-        "label": "땅볼 슈팅 득점",
-        "type": "goal"
+        "label": "옆그물 맞고 빗나감",
+        "type": "shot"
       },
       {
         "t": 528,
@@ -2503,8 +2518,8 @@
       },
       {
         "t": 405,
-        "type": "goal",
-        "label": "가까운 골대 오른발 골"
+        "type": "save",
+        "label": "골키퍼 선방"
       },
       {
         "t": 431,
@@ -2513,8 +2528,8 @@
       },
       {
         "t": 458,
-        "label": "먼쪽 골대 득점",
-        "type": "goal"
+        "label": "골키퍼 정면 선방",
+        "type": "save"
       },
       {
         "t": 473,
@@ -2533,8 +2548,8 @@
       },
       {
         "t": 720,
-        "label": "가까운 쪽 골대 오른발 골",
-        "type": "goal"
+        "label": "골문 왼쪽 빗나감",
+        "type": "shot"
       }
     ],
     "model": "gemini-3.8-flash",
