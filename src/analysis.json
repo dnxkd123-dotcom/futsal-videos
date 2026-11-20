@@ -2502,6 +2502,11 @@
         "type": "shot"
       },
       {
+        "t": 405,
+        "type": "goal",
+        "label": "가까운 골대 오른발 골"
+      },
+      {
         "t": 431,
         "label": "골키퍼 선방",
         "type": "save"
@@ -2528,12 +2533,19 @@
       },
       {
         "t": 720,
-        "label": "골대 강타 불발",
-        "type": "shot"
+        "label": "가까운 쪽 골대 오른발 골",
+        "type": "goal"
       }
     ],
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-11-20",
-    "verified": true
+    "verified": true,
+    "goalHunt": {
+      "model": "gemini-3.8-flash",
+      "at": "2026-11-20",
+      "cues": 12,
+      "checked": 11,
+      "added": 2
+    }
   }
 }
