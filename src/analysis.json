@@ -2190,6 +2190,11 @@
         "type": "play"
       },
       {
+        "t": 301,
+        "type": "goal",
+        "label": "근거리 골대 오른발 골"
+      },
+      {
         "t": 334,
         "label": "골키퍼 선방",
         "type": "save"
@@ -2211,8 +2216,8 @@
       },
       {
         "t": 552,
-        "label": "위협적인 유효 슈팅",
-        "type": "shot"
+        "label": "가까운 골대 오른발 골",
+        "type": "goal"
       },
       {
         "t": 579,
@@ -2233,11 +2238,23 @@
         "t": 738,
         "label": "골키퍼 결정적 선방",
         "type": "save"
+      },
+      {
+        "t": 780,
+        "type": "goal",
+        "label": "먼 쪽 골대 슈팅 골"
       }
     ],
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-11-19",
-    "verified": true
+    "verified": true,
+    "goalHunt": {
+      "model": "gemini-3.6-flash",
+      "at": "2026-11-20",
+      "cues": 9,
+      "checked": 7,
+      "added": 3
+    }
   },
   "XuNpvnt_qQU": {
     "highlights": [
@@ -2279,6 +2296,194 @@
     ],
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-11-19",
+    "verified": true
+  },
+  "N5dmvKsuvLs": {
+    "highlights": [
+      {
+        "t": 135,
+        "label": "수비수 블록",
+        "type": "shot"
+      },
+      {
+        "t": 282,
+        "label": "오른발 슈팅 골",
+        "type": "goal"
+      },
+      {
+        "t": 352,
+        "label": "슈팅과 선방",
+        "type": "save"
+      },
+      {
+        "t": 391,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 464,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 598,
+        "label": "골키퍼 선방",
+        "type": "save"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-20",
+    "verified": true
+  },
+  "46XSV8mSbCE": {
+    "highlights": [
+      {
+        "t": 98,
+        "label": "골대 벗어난 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 168,
+        "label": "수비수 블록",
+        "type": "shot"
+      },
+      {
+        "t": 318,
+        "label": "패스 연결 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 409,
+        "label": "골문 앞 슈팅 선방",
+        "type": "save"
+      },
+      {
+        "t": 504,
+        "label": "골대 벗어난 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 601,
+        "label": "돌파 후 오른발 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 632,
+        "label": "측면 돌파 후 슈팅 선방",
+        "type": "save"
+      },
+      {
+        "t": 755,
+        "label": "볼 차단 후 슈팅 선방",
+        "type": "save"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-11-20",
+    "verified": true
+  },
+  "umf98JNME5o": {
+    "highlights": [
+      {
+        "t": 17,
+        "label": "슈팅 골문 빗나감",
+        "type": "shot"
+      },
+      {
+        "t": 41,
+        "label": "슈팅 골문 벗어남",
+        "type": "shot"
+      },
+      {
+        "t": 60,
+        "label": "슈팅 골문 빗나감",
+        "type": "shot"
+      },
+      {
+        "t": 480,
+        "label": "땅볼 슈팅 득점",
+        "type": "goal"
+      },
+      {
+        "t": 528,
+        "label": "슈팅 골문 벗어남",
+        "type": "shot"
+      },
+      {
+        "t": 602,
+        "label": "골문 앞 결정적 선방",
+        "type": "save"
+      },
+      {
+        "t": 637,
+        "label": "강력한 슈팅 시도",
+        "type": "shot"
+      },
+      {
+        "t": 724,
+        "label": "슈팅 골문 빗나감",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-11-20",
+    "verified": true
+  },
+  "CRwgOvxoCNQ": {
+    "highlights": [
+      {
+        "t": 30,
+        "label": "골문 벗어난 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 149,
+        "label": "골문 앞 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 254,
+        "label": "골키퍼 정면 선방",
+        "type": "save"
+      },
+      {
+        "t": 358,
+        "label": "중거리 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 431,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 458,
+        "label": "먼쪽 골대 득점",
+        "type": "goal"
+      },
+      {
+        "t": 473,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 600,
+        "label": "중거리 슈팅 빗나감",
+        "type": "shot"
+      },
+      {
+        "t": 703,
+        "label": "골문 앞 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 720,
+        "label": "골대 강타 불발",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-11-20",
     "verified": true
   }
 }

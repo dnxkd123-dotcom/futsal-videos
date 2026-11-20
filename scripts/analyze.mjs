@@ -17,6 +17,14 @@
  *        진짜 골인지 판정한다. 골이 아닌데 골이라 하거나, 골인데 슈팅으로 적는 실수를 여기서 바로잡는다.
  *        클립은 최대 10개씩 묶어 한 번에 보낸다 — 영상 하나에 호출 2~3번 (무료 요금제는 하루 20번까지).
  *
+ * 놓친 골 찾기 (이미 분석된 영상에 골을 더한다):
+ *   npm run analyze -- --goal-hunt --date=2026-11-19   그날 영상 전부
+ *   npm run analyze -- 영상ID --goal-hunt              그 영상만 (--dry 와 같이 쓰면 저장 안 함)
+ *   ① 영상 전체에서 골 '단서'만 뽑는다 — "와~" 함성 · "나이스~" · 박수, 센터 킥오프 재시작, 선수 환호.
+ *   ② 단서마다 그 앞 구간을 고해상도로 잘라 진짜 골인지, 슈팅이 몇 초에 있었는지 판정한다.
+ *   ③ 확인된 골을 하이라이트에 더한다 (같은 순간의 슈팅 · 선방은 골로 바꾼다).
+ *   영상 하나에 호출 2~4번. 한 번에 모든 걸 찾게 하면 골을 많이 놓쳐서 (2026-11-19 경기) 만든 단계.
+ *
  * 유튜브 링크를 구글 Gemini API 에 그대로 넘긴다 (공개 영상만 가능, 내려받지 않음).
  * 키는 .env 의 GEMINI_API_KEY — 사이트 코드에는 들어가지 않는다.
  */
@@ -266,6 +274,136 @@ async function verifyShots(id, items, nearHidden) {
   return items.map((_, i) => byScene.get(i + 1) ?? { verdict: 'unsure', outcome: 'none', evidence: '응답에 이 장면이 없음' });
 }
 
+// ── 놓친 골 찾기 (--goal-hunt) ──────────────────────────────────────────────
+
+const CUES = ['sound', 'kickoff', 'celebrate'];
+const HUNT_PROMPT = `이 영상은 아마추어 풋살 경기 촬영본입니다. 이 경기에서는 골이 많이 났는데, 득점 장면을 하나도 놓치지 않으려고 합니다.
+득점을 알려 주는 '단서'만 처음부터 끝까지 시간순으로 모두 적으세요. 개수 제한 없음, 확실하지 않아도 적으세요.
+
+   - sound: 영상 소리에서 "와~" 하는 함성·환호성, "나이스~" 외침, 박수가 갑자기 크게 터지는 순간
+   - kickoff: 공을 하프라인 가운데(센터 서클)에 놓고 경기를 다시 시작하는 순간 (영상 맨 처음 시작은 빼세요)
+   - celebrate: 선수들이 손을 번쩍 들거나 하이파이브·포옹하며 기뻐하는 순간
+
+카메라에서 먼 쪽 골대는 화면 위쪽에 아주 작게 보이니 그쪽도 똑같이 주의 깊게 보세요.
+time 은 그 단서가 시작되는 시각 "MM:SS", note 는 15자 이내 한국어 설명입니다.`;
+
+const HUNT_SCHEMA = {
+  type: 'OBJECT',
+  properties: {
+    cues: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          time: { type: 'STRING' },
+          cue: { type: 'STRING', enum: CUES },
+          note: { type: 'STRING' }
+        },
+        required: ['time', 'cue', 'note']
+      }
+    }
+  },
+  required: ['cues']
+};
+
+const HUNT_VERIFY_PROMPT = `위의 클립들은 같은 아마추어 풋살 경기 영상에서 잘라낸 장면들입니다. 각 클립 앞에 "장면 N (길이 L초)" 라고 적어 두었습니다.
+장면마다 따로, 그 클립 안에서 득점(골)이 났는지 엄격하게 판정하고, 골이면 그 골이 들어간 슈팅이 클립 시작부터 몇 초 뒤였는지 shotSecond 에 적으세요. 골이 아니면 shotSecond 는 0.
+
+골로 판정하려면 아래 중 하나가 화면에서 분명히 보여야 합니다.
+   - 공이 골라인을 완전히 넘어 골문 안(그물 안쪽)에 들어간다
+   - 그물 안쪽이 출렁이거나, 골문 안에 있는 공을 꺼낸다
+   - 슈팅 직후 하프라인 가운데(센터)에서 킥오프로 경기를 다시 시작한다
+소리도 함께 들으세요. "와~" 함성·환호성이나 "나이스~" 외침이 터지면 골일 가능성이 높지만, 소리만 있고 화면 증거가 없으면 unsure 입니다. "나이스~" 는 선방이나 좋은 패스에도 외칩니다.
+먼 쪽 골대(화면 위쪽에 작게 보이는 골대)는 공과 그물이 작아 잘 안 보일 수 있습니다. 공이 골문 쪽으로 사라진 뒤 센터 킥오프로 다시 시작하면 goal 입니다. 작아서 안 보인다는 이유만으로 no_goal 로 하지 마세요.
+한 클립에 골이 두 번 있으면 더 뒤쪽 골을 적으세요.
+evidence 는 판단 근거 한 문장, label 은 15자 이내 한국어 설명입니다 (예: "먼 쪽 골대 왼발 골").`;
+
+const HUNT_VERIFY_SCHEMA = {
+  type: 'OBJECT',
+  properties: {
+    results: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          scene: { type: 'INTEGER' },
+          verdict: { type: 'STRING', enum: ['goal', 'no_goal', 'unsure'] },
+          shotSecond: { type: 'NUMBER' },
+          evidence: { type: 'STRING' },
+          label: { type: 'STRING' }
+        },
+        required: ['scene', 'verdict', 'shotSecond', 'evidence', 'label']
+      }
+    }
+  },
+  required: ['results']
+};
+
+/** 단서 시각 → 그 앞 골을 확인할 구간. 함성 · 환호는 직전 슈팅, 킥오프는 공을 가져오는 시간까지 길게 */
+function huntWindow(cue) {
+  if (cue.cue === 'kickoff') return { start: Math.max(0, cue.t - 40), end: cue.t + 4 };
+  return { start: Math.max(0, cue.t - 14), end: cue.t + 12 };
+}
+
+async function huntGoals(id, existing) {
+  const parsed = await callGemini(MODEL, [{ fileData: youtube(id) }, { text: HUNT_PROMPT }], HUNT_SCHEMA);
+  const cues = (parsed.cues ?? [])
+    .map((c) => ({ t: toSeconds(c.time), cue: CUES.includes(c.cue) ? c.cue : 'sound', note: String(c.note ?? '').trim() }))
+    .filter((c) => c.t !== null && c.t > 15)
+    .sort((a, b) => a.t - b.t);
+
+  const knownGoals = existing.filter((item) => item.type === 'goal').map((item) => item.t);
+  // 이미 아는 골 근처 단서, 서로 너무 가까운 단서는 뺀다 (같은 골을 여러 번 확인하지 않게)
+  const picked = [];
+  for (const cue of cues) {
+    const { start, end } = huntWindow(cue);
+    if (knownGoals.some((g) => g >= start - 3 && g <= end)) continue;
+    if (picked.some((p) => Math.abs(p.t - cue.t) < (cue.cue === 'kickoff' || p.cue === 'kickoff' ? 20 : 8))) continue;
+    picked.push(cue);
+  }
+  console.log(`\n   단서 ${cues.length}개 (함성 ${cues.filter((c) => c.cue === 'sound').length} · 킥오프 ${cues.filter((c) => c.cue === 'kickoff').length} · 환호 ${cues.filter((c) => c.cue === 'celebrate').length}) → 확인할 구간 ${picked.length}개`);
+
+  const found = [];
+  for (let i = 0; i < picked.length; i += CLIPS_PER_CALL) {
+    const batch = picked.slice(i, i + CLIPS_PER_CALL);
+    const windows = batch.map(huntWindow);
+    const parts = batch.flatMap((_, j) => [
+      { text: `장면 ${j + 1} (길이 ${windows[j].end - windows[j].start}초)` },
+      { fileData: youtube(id), videoMetadata: { startOffset: `${windows[j].start}s`, endOffset: `${windows[j].end}s`, fps: CLIP_FPS } }
+    ]);
+    const result = await callGemini(VERIFY_MODEL, [...parts, { text: HUNT_VERIFY_PROMPT }], HUNT_VERIFY_SCHEMA, {
+      mediaResolution: 'MEDIA_RESOLUTION_HIGH'
+    });
+    const byScene = new Map((result.results ?? []).map((r) => [r.scene, r]));
+    batch.forEach((cue, j) => {
+      const r = byScene.get(j + 1);
+      const { start, end } = windows[j];
+      const mark = r?.verdict === 'goal' ? '골' : r?.verdict === 'unsure' ? '애매' : '아님';
+      console.log(`   ${clock(cue.t).padStart(5)} ${cue.cue.padEnd(9)} ${cue.note} → ${mark}${r ? ` — ${r.evidence}` : ''}`);
+      if (r?.verdict !== 'goal') return;
+      // 슈팅 시각 — 구간 밖이면 단서 바로 앞으로 본다
+      const second = Number(r.shotSecond);
+      const t = Number.isFinite(second) && second > 0 && start + second < end ? Math.round(start + second) : Math.max(start, cue.t - 2);
+      found.push({ t, type: 'goal', label: String(r.label ?? '').trim() || '골' });
+    });
+  }
+  return { cues: cues.length, checked: picked.length, found };
+}
+
+/** 찾은 골을 하이라이트에 더한다 — 같은 순간(±6초)의 슈팅 · 선방은 골로 바꾸고, 25초 안의 골 두 개는 하나로 */
+function mergeGoals(highlights, found) {
+  const items = highlights.map((item) => ({ ...item }));
+  const added = [];
+  for (const goal of found.sort((a, b) => a.t - b.t)) {
+    if (items.some((item) => item.type === 'goal' && Math.abs(item.t - goal.t) < 25)) continue;
+    const near = items.find((item) => ['shot', 'save', 'play'].includes(item.type) && Math.abs(item.t - goal.t) <= 6);
+    if (near) Object.assign(near, { type: 'goal', label: goal.label, t: Math.min(near.t, goal.t) });
+    else items.push(goal);
+    added.push(goal);
+  }
+  return { highlights: items.sort((a, b) => a.t - b.t), added };
+}
+
 /** 판정 결과로 종류를 고친다. 애매하면(unsure) 1단계 결과를 그대로 두고, 슈팅이 없던 장면은 null(삭제) */
 function applyVerdict(item, check) {
   if (check.verdict === 'unsure') return item;
@@ -334,9 +472,44 @@ async function main() {
   const verify = !args.includes('--no-verify') && process.env.ANALYZE_NO_VERIFY !== '1';
   const nearHidden = args.includes('--near-goal-hidden');
   const onlyId = args.find((arg) => !arg.startsWith('--'));
+  const date = args.find((arg) => arg.startsWith('--date='))?.slice('--date='.length);
 
   const videos = JSON.parse(readFileSync(VIDEOS, 'utf8'));
   const analysis = JSON.parse(readFileSync(ANALYSIS, 'utf8'));
+
+  if (args.includes('--goal-hunt')) {
+    const targets = videos.filter((video) => (onlyId ? video.id === onlyId : video.date === date) && analysis[video.id]);
+    if (!targets.length) {
+      console.error('--goal-hunt 는 이미 분석된 영상에 씁니다. 영상ID 나 --date=YYYY-MM-DD 를 주세요.');
+      process.exit(1);
+    }
+    let done = 0;
+    for (const video of targets) {
+      process.stdout.write(`[${done + 1}/${targets.length}] ${video.title} (${video.id}) 골 찾기 …`);
+      try {
+        const before = JSON.parse(readFileSync(ANALYSIS, 'utf8'))[video.id];
+        const hunt = await huntGoals(video.id, before.highlights);
+        const { highlights, added } = mergeGoals(before.highlights, hunt.found);
+        const goals = highlights.filter((item) => item.type === 'goal').length;
+        console.log(`   → 골 ${added.length}개 추가 (${added.map((g) => clock(g.t)).join(', ') || '없음'}) · 이제 골 ${goals}개`);
+        if (!dry) {
+          const latest = JSON.parse(readFileSync(ANALYSIS, 'utf8'));
+          latest[video.id] = {
+            ...latest[video.id],
+            highlights,
+            goalHunt: { model: VERIFY_MODEL === MODEL ? MODEL : `${MODEL} + ${VERIFY_MODEL}`, at: new Date().toISOString().slice(0, 10), cues: hunt.cues, checked: hunt.checked, added: added.length }
+          };
+          writeFileSync(ANALYSIS, JSON.stringify(latest, null, 2) + '\n');
+        }
+        done += 1;
+      } catch (err) {
+        console.log(`\n   실패: ${err.message}`);
+        if (err.daily) break;
+      }
+    }
+    console.log(`끝 — ${done}/${targets.length}개 골 찾기 했어요.${dry ? ' (저장 안 함)' : ' 확인 후 커밋·푸시하세요.'}`);
+    return;
+  }
   const targets = videos.filter((video) =>
     onlyId ? video.id === onlyId : force || !analysis[video.id]
   );
