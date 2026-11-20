@@ -2114,8 +2114,8 @@
     "highlights": [
       {
         "t": 88,
-        "label": "골문 벗어난 슛",
-        "type": "shot"
+        "label": "가까운 쪽 골대 골",
+        "type": "goal"
       },
       {
         "t": 134,
@@ -2134,13 +2134,13 @@
       },
       {
         "t": 261,
-        "label": "먼 쪽 골대 슈팅",
-        "type": "shot"
+        "label": "먼 쪽 골대 골",
+        "type": "goal"
       },
       {
         "t": 284,
-        "label": "수비 태클 차단",
-        "type": "shot"
+        "label": "가까운 쪽 골대 골",
+        "type": "goal"
       },
       {
         "t": 410,
@@ -2174,13 +2174,20 @@
       },
       {
         "t": 701,
-        "label": "수비 차단 무산",
-        "type": "shot"
+        "label": "먼 쪽 골대 골",
+        "type": "goal"
       }
     ],
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-11-19",
-    "verified": true
+    "verified": true,
+    "goalHunt": {
+      "model": "gemini-3.6-flash",
+      "at": "2026-11-20",
+      "cues": 8,
+      "checked": 7,
+      "added": 4
+    }
   },
   "GY2nfBZa_oI": {
     "highlights": [
@@ -2296,10 +2303,22 @@
     ],
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-11-19",
-    "verified": true
+    "verified": true,
+    "goalHunt": {
+      "model": "gemini-3.8-flash",
+      "at": "2026-11-20",
+      "cues": 4,
+      "checked": 3,
+      "added": 0
+    }
   },
   "N5dmvKsuvLs": {
     "highlights": [
+      {
+        "t": 63,
+        "type": "goal",
+        "label": "먼 쪽 골대 오른쪽 골"
+      },
       {
         "t": 135,
         "label": "수비수 블록",
@@ -2333,7 +2352,14 @@
     ],
     "model": "gemini-3.6-flash",
     "analyzedAt": "2026-11-20",
-    "verified": true
+    "verified": true,
+    "goalHunt": {
+      "model": "gemini-3.6-flash",
+      "at": "2026-11-20",
+      "cues": 17,
+      "checked": 10,
+      "added": 1
+    }
   },
   "46XSV8mSbCE": {
     "highlights": [
@@ -2380,7 +2406,14 @@
     ],
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-11-20",
-    "verified": true
+    "verified": true,
+    "goalHunt": {
+      "model": "gemini-3.8-flash",
+      "at": "2026-11-20",
+      "cues": 10,
+      "checked": 5,
+      "added": 0
+    }
   },
   "umf98JNME5o": {
     "highlights": [
@@ -2398,6 +2431,16 @@
         "t": 60,
         "label": "슈팅 골문 빗나감",
         "type": "shot"
+      },
+      {
+        "t": 182,
+        "type": "goal",
+        "label": "왼쪽 골대 롱슛 골"
+      },
+      {
+        "t": 337,
+        "type": "goal",
+        "label": "먼 쪽 골대 골"
       },
       {
         "t": 480,
@@ -2427,7 +2470,14 @@
     ],
     "model": "gemini-3.8-flash",
     "analyzedAt": "2026-11-20",
-    "verified": true
+    "verified": true,
+    "goalHunt": {
+      "model": "gemini-3.6-flash",
+      "at": "2026-11-20",
+      "cues": 9,
+      "checked": 7,
+      "added": 2
+    }
   },
   "CRwgOvxoCNQ": {
     "highlights": [
