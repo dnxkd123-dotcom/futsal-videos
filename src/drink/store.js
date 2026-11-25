@@ -57,6 +57,12 @@ export async function signOut() {
   await auth.signOut(authApp);
 }
 
+/** 같은 운영진 계정으로 들어가는 다른 숨은 페이지(멤버 관리 /members/)도 이 연결을 쓴다 — 한 번 들어오면 둘 다 열린다 */
+export async function staffFirestore() {
+  const { fs, db } = await load();
+  return { fs, db };
+}
+
 /**
  * 기록은 문서 하나에 모두 담는다 — drink/state
  *   members: ['이름', …]                       (순서 = 동률일 때 우선순위)

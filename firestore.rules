@@ -50,6 +50,18 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // 멤버 관리 (/members/) — 멤버 명단과 월별 부상 · 불참 · 기타 기록을 문서 하나(roster/state)에 둔다.
+    // 음료수 당번과 같은 운영진 계정으로 들어온 사람만 읽고 쓴다 (부상 사유는 개인 건강 정보라 공개하지 않는다).
+    match /roster/{docId} {
+      allow read: if docId == 'state' && isDrinkUser();
+      allow create, update: if docId == 'state' && isDrinkUser()
+        && request.resource.data.keys().hasOnly(['members', 'months', 'updatedAt'])
+        && request.resource.data.members is list && request.resource.data.members.size() <= 300
+        && request.resource.data.months is map
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if false;
+    }
+
     // 로고 후보 좋아요 (/logo/) — 한 사람(익명 uid)이 로고 하나에 문서 하나. 문서 ID 가 "uid__로고이름" 이라
     // 같은 로고에 두 번 못 누른다. 개수 집계를 위해 읽기는 공개, 지우기(취소)는 누른 사람만.
     match /logoLikes/{likeId} {
