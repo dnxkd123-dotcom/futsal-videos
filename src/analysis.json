@@ -2704,9 +2704,14 @@
         "type": "foul"
       },
       {
+        "t": 155,
+        "type": "goal",
+        "label": "먼 쪽 골대 오른발 골"
+      },
+      {
         "t": 445,
-        "label": "골키퍼 선방",
-        "type": "save"
+        "label": "가까운 쪽 골대 오른발 골",
+        "type": "goal"
       },
       {
         "t": 457,
@@ -2725,7 +2730,14 @@
       }
     ],
     "model": "gemini-3.6-flash",
-    "analyzedAt": "2026-11-27"
+    "analyzedAt": "2026-11-27",
+    "goalHunt": {
+      "model": "gemini-3.6-flash",
+      "at": "2026-11-27",
+      "cues": 11,
+      "checked": 6,
+      "added": 2
+    }
   },
   "3-cnFbPo2TE": {
     "highlights": [
