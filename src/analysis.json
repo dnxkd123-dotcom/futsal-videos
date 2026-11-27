@@ -2894,5 +2894,72 @@
     ],
     "model": "gemini-3.6-flash",
     "analyzedAt": "2026-11-27"
+  },
+  "iYN59liH11w": {
+    "highlights": [
+      {
+        "t": 214,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 309,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 470,
+        "label": "골문 앞 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 526,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 554,
+        "label": "오른발 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 640,
+        "label": "골키퍼 선방",
+        "type": "save"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-27"
+  },
+  "q6OlAGx4VwU": {
+    "highlights": [
+      {
+        "t": 20,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 189,
+        "label": "아쉬운 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 464,
+        "label": "오른발 슈팅 득점",
+        "type": "goal"
+      },
+      {
+        "t": 581,
+        "label": "구석으로 차 넣은 득점",
+        "type": "goal"
+      },
+      {
+        "t": 655,
+        "label": "슈팅 몸으로 방어",
+        "type": "save"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-27"
   }
 }
