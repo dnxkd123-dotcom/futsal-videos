@@ -2695,5 +2695,107 @@
     ],
     "model": "gemini-3.6-flash",
     "analyzedAt": "2026-11-27"
+  },
+  "Q13itgOhfJU": {
+    "highlights": [
+      {
+        "t": 85,
+        "label": "슬라이딩 태클",
+        "type": "foul"
+      },
+      {
+        "t": 445,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 457,
+        "label": "골키퍼 다이빙 선방",
+        "type": "save"
+      },
+      {
+        "t": 507,
+        "label": "강력한 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 731,
+        "label": "골문 앞 슈팅",
+        "type": "shot"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-27"
+  },
+  "3-cnFbPo2TE": {
+    "highlights": [
+      {
+        "t": 68,
+        "label": "측면 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 199,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 245,
+        "label": "골문 앞 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 325,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 358,
+        "label": "골문 구석 득점",
+        "type": "goal"
+      },
+      {
+        "t": 417,
+        "label": "수비진 육탄 방어",
+        "type": "save"
+      },
+      {
+        "t": 476,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 522,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 577,
+        "label": "위협적인 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 655,
+        "label": "골문 앞 혼전 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 695,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 729,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 763,
+        "label": "골키퍼 캐칭",
+        "type": "save"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-27"
   }
 }
