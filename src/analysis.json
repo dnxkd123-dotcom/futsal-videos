@@ -2652,13 +2652,25 @@
         "type": "goal"
       },
       {
+        "t": 383,
+        "type": "goal",
+        "label": "가까운 쪽 골대 골"
+      },
+      {
         "t": 466,
         "label": "골키퍼 선방",
         "type": "save"
       }
     ],
     "model": "gemini-3.6-flash",
-    "analyzedAt": "2026-11-27"
+    "analyzedAt": "2026-11-27",
+    "goalHunt": {
+      "model": "gemini-3.6-flash",
+      "at": "2026-11-27",
+      "cues": 17,
+      "checked": 9,
+      "added": 1
+    }
   },
   "v_S-IPb6nRo": {
     "highlights": [
