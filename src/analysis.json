@@ -2659,5 +2659,41 @@
     ],
     "model": "gemini-3.6-flash",
     "analyzedAt": "2026-11-27"
+  },
+  "v_S-IPb6nRo": {
+    "highlights": [
+      {
+        "t": 142,
+        "label": "돌파 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 168,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 184,
+        "label": "측면 슈팅 득점",
+        "type": "goal"
+      },
+      {
+        "t": 512,
+        "label": "골문 앞 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 573,
+        "label": "중앙 슈팅 득점",
+        "type": "goal"
+      },
+      {
+        "t": 742,
+        "label": "골키퍼 선방",
+        "type": "save"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-27"
   }
 }
