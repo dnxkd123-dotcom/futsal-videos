@@ -2797,5 +2797,46 @@
     ],
     "model": "gemini-3.6-flash",
     "analyzedAt": "2026-11-27"
+  },
+  "4oaQzd6lKv4": {
+    "highlights": [
+      {
+        "t": 70,
+        "label": "위험 지역 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 127,
+        "label": "측면 강력한 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 278,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 385,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 557,
+        "label": "골문 앞 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 663,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 696,
+        "label": "측면 돌파 후 득점",
+        "type": "goal"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-27"
   }
 }
