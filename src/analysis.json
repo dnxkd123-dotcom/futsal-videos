@@ -2566,9 +2566,9 @@
   "-0hHhomVzvQ": {
     "highlights": [
       {
-        "t": 49,
-        "label": "먼거리 중거리 슛",
-        "type": "shot"
+        "t": 44,
+        "label": "먼 쪽 골대 오른발 골",
+        "type": "goal"
       },
       {
         "t": 84,
@@ -2637,7 +2637,14 @@
       }
     ],
     "model": "gemini-3.8-flash",
-    "analyzedAt": "2026-11-27"
+    "analyzedAt": "2026-11-27",
+    "goalHunt": {
+      "model": "gemini-3.6-flash",
+      "at": "2026-11-27",
+      "cues": 11,
+      "checked": 6,
+      "added": 1
+    }
   },
   "VHGc-wd1SdA": {
     "highlights": [
