@@ -2940,13 +2940,18 @@
       },
       {
         "t": 189,
-        "label": "아쉬운 슈팅",
-        "type": "shot"
+        "label": "먼 쪽 골대 골",
+        "type": "goal"
       },
       {
         "t": 464,
         "label": "오른발 슈팅 득점",
         "type": "goal"
+      },
+      {
+        "t": 532,
+        "type": "goal",
+        "label": "오른쪽 측면 골"
       },
       {
         "t": 581,
@@ -2960,6 +2965,13 @@
       }
     ],
     "model": "gemini-3.6-flash",
-    "analyzedAt": "2026-11-27"
+    "analyzedAt": "2026-11-27",
+    "goalHunt": {
+      "model": "gemini-3.6-flash",
+      "at": "2026-11-27",
+      "cues": 14,
+      "checked": 6,
+      "added": 2
+    }
   }
 }
