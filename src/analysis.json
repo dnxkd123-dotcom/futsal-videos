@@ -2848,13 +2848,13 @@
       },
       {
         "t": 84,
-        "label": "골키퍼 선방",
-        "type": "save"
+        "label": "먼 쪽 골대 골",
+        "type": "goal"
       },
       {
-        "t": 150,
-        "label": "역습 후 슈팅",
-        "type": "shot"
+        "t": 149,
+        "label": "먼 쪽 골대 골",
+        "type": "goal"
       },
       {
         "t": 205,
@@ -2877,9 +2877,14 @@
         "type": "shot"
       },
       {
+        "t": 462,
+        "type": "goal",
+        "label": "먼 쪽 골대 골"
+      },
+      {
         "t": 503,
-        "label": "골키퍼 선방",
-        "type": "save"
+        "label": "먼 쪽 골대 골",
+        "type": "goal"
       },
       {
         "t": 550,
@@ -2893,7 +2898,14 @@
       }
     ],
     "model": "gemini-3.6-flash",
-    "analyzedAt": "2026-11-27"
+    "analyzedAt": "2026-11-27",
+    "goalHunt": {
+      "model": "gemini-3.6-flash",
+      "at": "2026-11-27",
+      "cues": 15,
+      "checked": 8,
+      "added": 4
+    }
   },
   "iYN59liH11w": {
     "highlights": [
