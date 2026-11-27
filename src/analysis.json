@@ -2812,8 +2812,8 @@
       },
       {
         "t": 278,
-        "label": "골키퍼 선방",
-        "type": "save"
+        "label": "가까운 쪽 왼발 골",
+        "type": "goal"
       },
       {
         "t": 385,
@@ -2822,13 +2822,13 @@
       },
       {
         "t": 557,
-        "label": "골문 앞 슈팅",
-        "type": "shot"
+        "label": "가까운 쪽 오른발 골",
+        "type": "goal"
       },
       {
         "t": 663,
-        "label": "골키퍼 선방",
-        "type": "save"
+        "label": "가까운 쪽 골",
+        "type": "goal"
       },
       {
         "t": 696,
@@ -2837,7 +2837,14 @@
       }
     ],
     "model": "gemini-3.6-flash",
-    "analyzedAt": "2026-11-27"
+    "analyzedAt": "2026-11-27",
+    "goalHunt": {
+      "model": "gemini-3.6-flash",
+      "at": "2026-11-27",
+      "cues": 8,
+      "checked": 5,
+      "added": 3
+    }
   },
   "BEJ81Uqz638": {
     "highlights": [
