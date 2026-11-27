@@ -5,7 +5,8 @@
  *   npm run analyze -- 영상ID     그 영상만 (이미 있어도 다시)
  *   npm run analyze -- --force   전부 다시
  *   npm run analyze -- 영상ID --dry   저장하지 않고 결과만 출력 (프롬프트 시험용)
- *   --no-verify                  2단계 골 검증을 건너뛴다 (빠르지만 덜 정확). .env 의 ANALYZE_NO_VERIFY=1 도 같다
+ *   --verify                     2단계 골 검증까지 한다. 기본은 끔 (2026-11-27~) — 검증이 진짜 골까지 너무 많이 지워서,
+ *                                골은 1단계 결과 + 골 찾기(--goal-hunt)로 넉넉하게 잡는다. .env 의 ANALYZE_VERIFY=1 도 같다
  *   --near-goal-hidden           카메라 쪽(가까운) 골대가 화면에 잘 안 잡힌 촬영본용.
  *                                그쪽 골은 공이 들어가는 순간 대신 '경기가 어떻게 다시 시작되는지'로 판정하고,
  *                                클립을 더 길게 잘라 재시작 장면까지 보이게 한다. (예: 2026-11-05 경기)
@@ -13,7 +14,7 @@
  * 두 단계 모두 먼 쪽(화면 위쪽에 작게 보이는) 골대와 골 직후 "와~" 함성 · "나이스~" 외침 소리를 단서로 쓰게 한다.
  *
  * 1단계: 영상 전체를 보고 하이라이트 후보를 뽑는다.
- * 2단계: 골 · 슈팅 · 선방 후보마다 앞뒤 20초 구간만 잘라 촘촘하게(초당 3장, 고해상도) 다시 보여주고
+ * 2단계 (--verify 일 때만): 골 · 슈팅 · 선방 후보마다 앞뒤 20초 구간만 잘라 촘촘하게(초당 3장, 고해상도) 다시 보여주고
  *        진짜 골인지 판정한다. 골이 아닌데 골이라 하거나, 골인데 슈팅으로 적는 실수를 여기서 바로잡는다.
  *        클립은 최대 10개씩 묶어 한 번에 보낸다 — 영상 하나에 호출 2~3번 (무료 요금제는 하루 20번까지).
  *
@@ -41,6 +42,7 @@ const MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 // 검증용 모델 — 비워 두면 MODEL 과 같다. 검증만 더 정확한 모델로 돌리고 싶을 때
 const VERIFY_MODEL = process.env.GEMINI_VERIFY_MODEL || MODEL;
 const KEY = process.env.GEMINI_API_KEY;
+const TIMEOUT_MIN = Number(process.env.ANALYZE_TIMEOUT_MIN) || 15; // 요청 하나를 최대 몇 분 기다릴지
 
 const TYPES = ['goal', 'shot', 'save', 'play', 'foul', 'other'];
 const CHECK_TYPES = ['goal', 'shot', 'save']; // 2단계에서 다시 볼 종류
@@ -192,8 +194,9 @@ function postJson(url, headers, body) {
       });
       res.on('error', reject);
     });
-    // 5분은 짧지만, 연결이 겉으로만 살아 있고 응답이 안 오는 경우(VPN 재연결 등)도 있어서 15분이면 끊고 다시 시도한다
-    req.setTimeout(15 * 60 * 1000, () => req.destroy(new Error('15분 동안 응답이 없어요')));
+    // 5분은 짧지만, 연결이 겉으로만 살아 있고 응답이 안 오는 경우(VPN 재연결 · 서버 혼잡)도 있어서 정해진 시간이 지나면 끊는다.
+    // 기본 15분, .env 나 실행할 때 ANALYZE_TIMEOUT_MIN=8 처럼 줄일 수 있다
+    req.setTimeout(TIMEOUT_MIN * 60 * 1000, () => req.destroy(Object.assign(new Error(`${TIMEOUT_MIN}분 동안 응답이 없어요`), { timeout: true })));
     req.on('error', reject);
     req.end(body);
   });
@@ -214,6 +217,8 @@ async function callGemini(model, parts, schema, extraConfig = {}) {
         })
       );
     } catch (err) {
+      // 시간 초과는 서버가 몹시 붐빈다는 뜻이라 한 번만 더 해 보고 넘긴다 (5번 기다리면 1시간이 넘는다)
+      if (err.timeout && attempt >= 2) throw err;
       // 연결 자체가 끊김 (VPN 재연결 등) — 조금 쉬었다가 다시
       if (attempt < 5) {
         await sleep(attempt * 10000);
@@ -472,8 +477,9 @@ async function main() {
   const args = process.argv.slice(2);
   const force = args.includes('--force');
   const dry = args.includes('--dry');
-  // .env 에 ANALYZE_NO_VERIFY=1 을 넣어도 --no-verify 와 같다 (이미 돌고 있는 반복 작업 중간에 바꿀 때)
-  const verify = !args.includes('--no-verify') && process.env.ANALYZE_NO_VERIFY !== '1';
+  // 2단계 검증은 기본으로 끈다 (2026-11-27~). 검증이 골을 너무 많이 지워서 — 골은 1단계 + 골 찾기(--goal-hunt)로 넉넉하게 잡는다.
+  // 필요하면 --verify (또는 .env 의 ANALYZE_VERIFY=1) 로 켤 수 있다.
+  const verify = args.includes('--verify') || process.env.ANALYZE_VERIFY === '1';
   const nearHidden = args.includes('--near-goal-hidden');
   const onlyId = args.find((arg) => !arg.startsWith('--'));
   const date = args.find((arg) => arg.startsWith('--date='))?.slice('--date='.length);

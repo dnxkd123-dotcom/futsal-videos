@@ -2562,5 +2562,102 @@
       "checked": 11,
       "added": 2
     }
+  },
+  "-0hHhomVzvQ": {
+    "highlights": [
+      {
+        "t": 49,
+        "label": "먼거리 중거리 슛",
+        "type": "shot"
+      },
+      {
+        "t": 84,
+        "label": "측면 돌파 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 131,
+        "label": "기습적인 중거리 슛",
+        "type": "shot"
+      },
+      {
+        "t": 199,
+        "label": "침투 후 득점",
+        "type": "goal"
+      },
+      {
+        "t": 295,
+        "label": "역습 슈팅 골대 강타",
+        "type": "shot"
+      },
+      {
+        "t": 324,
+        "label": "골키퍼 롱킥 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 363,
+        "label": "패스 연결 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 431,
+        "label": "중앙 돌파 후 득점",
+        "type": "goal"
+      },
+      {
+        "t": 485,
+        "label": "측면 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 513,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 552,
+        "label": "선방 후 리바운드 골",
+        "type": "goal"
+      },
+      {
+        "t": 562,
+        "label": "골문 앞 혼전 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 673,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 711,
+        "label": "돌파 중 파울",
+        "type": "foul"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "analyzedAt": "2026-11-27"
+  },
+  "VHGc-wd1SdA": {
+    "highlights": [
+      {
+        "t": 126,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 350,
+        "label": "득점 성공",
+        "type": "goal"
+      },
+      {
+        "t": 466,
+        "label": "골키퍼 선방",
+        "type": "save"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-27"
   }
 }
