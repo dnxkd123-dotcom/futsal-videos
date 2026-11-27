@@ -2838,5 +2838,61 @@
     ],
     "model": "gemini-3.6-flash",
     "analyzedAt": "2026-11-27"
+  },
+  "BEJ81Uqz638": {
+    "highlights": [
+      {
+        "t": 15,
+        "label": "중거리 슈팅 득점",
+        "type": "goal"
+      },
+      {
+        "t": 84,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 150,
+        "label": "역습 후 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 205,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 236,
+        "label": "골대 상단 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 380,
+        "label": "원터치 슈팅 득점",
+        "type": "goal"
+      },
+      {
+        "t": 454,
+        "label": "골대 앞 슈팅",
+        "type": "shot"
+      },
+      {
+        "t": 503,
+        "label": "골키퍼 선방",
+        "type": "save"
+      },
+      {
+        "t": 550,
+        "label": "드리블 후 득점",
+        "type": "goal"
+      },
+      {
+        "t": 633,
+        "label": "골키퍼 선방",
+        "type": "save"
+      }
+    ],
+    "model": "gemini-3.6-flash",
+    "analyzedAt": "2026-11-27"
   }
 }
